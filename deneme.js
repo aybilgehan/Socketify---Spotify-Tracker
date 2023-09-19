@@ -11,15 +11,12 @@ const SPOTIFY_CLIENT_ID = '206b594b54644226957f281d9818d424';
 const SPOTIFY_CLIENT_SECRET = '332b8796a2d84ab5ae74720fe0c6e380';
 const REDIRECT_URI = 'http://localhost:8080/callback'; // Update this with your actual redirect URI
 
-// Create an HTTP server with Express
 const server = app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
 });
 
-// Create a WebSocket server that attaches to the HTTP server
 const wss = new WebSocket.Server({ noServer: true });
 
-// Handle WebSocket connections
 wss.on('connection', (ws) => {
     console.log('New connection');
     ws.on('message', (message) => {
