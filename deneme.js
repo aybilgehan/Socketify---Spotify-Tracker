@@ -3,6 +3,8 @@ const axios = require('axios');
 const querystring = require('querystring');
 const WebSocket = require('ws'); // Import the ws library
 const SpotifyWebApi = require('spotify-web-api-node');
+const session = require('express-session');
+
 
 const app = express();
 const PORT = process.env.PORT || 8080;
@@ -10,6 +12,14 @@ const PORT = process.env.PORT || 8080;
 const SPOTIFY_CLIENT_ID = '206b594b54644226957f281d9818d424';
 const SPOTIFY_CLIENT_SECRET = '332b8796a2d84ab5ae74720fe0c6e380';
 const REDIRECT_URI = 'http://localhost:8080/callback'; // Update this with your actual redirect URI
+
+app.use(session({
+    secret: 'keyboard cat',
+    resave: false,
+    saveUninitialized: true
+  }))
+app.set("view engine", "twig");
+
 
 // Create an HTTP server with Express
 const server = app.listen(PORT, () => {
@@ -23,13 +33,21 @@ const wss = new WebSocket.Server({ noServer: true });
 wss.on('connection', (ws) => {
     console.log('New connection');
     ws.on('message', (message) => {
-        console.log(`Received: ${message}`);
         const spotifyApi = new SpotifyWebApi({ 
             clientId: SPOTIFY_CLIENT_ID,
             clientSecret: SPOTIFY_CLIENT_SECRET,
             redirectUri: REDIRECT_URI,
         });
-        spotifyApi.setAccessToken(message);
+
+        message = JSON.parse(message);
+        spotifyApi.setAccessToken(message.accessToken);
+        spotifyApi.setRefreshToken(message.refreshToken);
+
+        setInterval(() => {
+            spotifyApi.refreshAccessToken().then((data) => {
+                spotifyApi.setAccessToken(data.body['access_token']);
+                console.log('The access token has been refreshed!');
+        })}, 1000*59*59);
 
         setInterval(() => {
             spotifyApi.getMyCurrentPlayingTrack()
@@ -55,6 +73,11 @@ wss.on('connection', (ws) => {
                 console.log('Something went wrong!', err);
             });
         }, 1000);
+    });
+
+    ws.on('close', () => {
+        console.log('Connection closed');
+        
     });
 });
 
@@ -90,15 +113,20 @@ app.get('/callback', async (req, res) => {
                 'Content-Type': 'application/x-www-form-urlencoded',
             },
         });
+        req.session.accessToken = response.data.access_token;
+        req.session.refreshToken = response.data.refresh_token;
 
-        const { access_token, refresh_token } = response.data;
-
-        res.render("index.twig", { access_token, refresh_token });
+        res.redirect('/track');
 
     } catch (error) {
         console.error(error);
         res.send('Error');
     }
+});
+
+app.get('/track', async (req, res) => {
+    console.log(req.session.accessToken);
+    res.render("index.twig", { accessToken: req.session.accessToken, refreshToken: req.session.refreshToken});
 });
 
 // Upgrade incoming HTTP requests to WebSocket connections

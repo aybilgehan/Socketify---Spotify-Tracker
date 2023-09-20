@@ -17,14 +17,11 @@
     </div>
   </div>
   <script>
-    const access_token = '{{ access_token }}';
-    const refresh_token = '{{ refresh_token }}';
 
-    console.log(access_token)
 
     const webSocket = new WebSocket('ws://localhost:8080/');
     webSocket.addEventListener("open", () => {
-      webSocket.send(access_token);
+      webSocket.send(JSON.stringify({ accessToken: '{{accessToken}}', refreshToken: '{{refreshToken}}' }));
     });
     webSocket.addEventListener("message", (event) => {
       data = JSON.parse(event.data);
