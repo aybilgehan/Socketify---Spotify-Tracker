@@ -4,14 +4,15 @@ const querystring = require('querystring');
 const WebSocket = require('ws'); // Import the ws library
 const SpotifyWebApi = require('spotify-web-api-node');
 const session = require('express-session');
+require('dotenv').config();
 
 
 const app = express();
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.PORT;
 
-const SPOTIFY_CLIENT_ID = '206b594b54644226957f281d9818d424';
-const SPOTIFY_CLIENT_SECRET = '332b8796a2d84ab5ae74720fe0c6e380';
-const REDIRECT_URI = 'http://localhost:8080/callback'; // Update this with your actual redirect URI
+const SPOTIFY_CLIENT_ID =  process.env.SPOTIFY_CLIENT_ID;
+const SPOTIFY_CLIENT_SECRET = process.env.SPOTIFY_CLIENT_SECRET;
+const REDIRECT_URI = process.env.REDIRECT_URI;
 
 app.use(session({
     secret: 'keyboard cat',
