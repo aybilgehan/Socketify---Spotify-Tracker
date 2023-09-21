@@ -21,15 +21,12 @@ app.use(session({
 app.set("view engine", "twig");
 
 
-// Create an HTTP server with Express
 const server = app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
 });
 
-// Create a WebSocket server that attaches to the HTTP server
 const wss = new WebSocket.Server({ noServer: true });
 
-// Handle WebSocket connections
 wss.on('connection', (ws) => {
     console.log('New connection');
     ws.on('message', (message) => {
