@@ -14,20 +14,60 @@ exports.connect = function() {
 
 // Create new user
 exports.addUser = function(username, password, email) {
-    const user = new userModel({
-        username: username,
-        password: password,
-        email: email
-    });
-
-    user.save().then(() => {
-        console.log('User is added.');
-    });
+    if(!userModel.findOne({username: username}) && !userModel.findOne({email: email})) {
+        const user = new userModel({
+            username: username,
+            password: password,
+            email: email
+        });
+        user.save();
+        return true;
+    } else {
+        return false;
+    }
 }
 
 // check spotify is connected   
+exports.checkSpotify = function(userID) {
+    return userModel.findById(userID).spotify.connected;
+}
 
-// disconnect spotify 
+// connect spotify
+exports.connectSpotify = function(userID, email, accessToken, refreshToken) {
+    try{
+        userModel.findByIdAndUpdate(userID, {
+            spotify: {
+                email: email,
+                accessToken: accessToken,
+                refreshToken: refreshToken,
+                connected: true
+            }
+        })
+        return true;
+    }catch(err){
+        console.log(err);
+        return false;
+    }
+}
+
+// delete spotify
+exports.deleteSpotify = function(userID) {
+    try{
+        userModel.findByIdAndUpdate(userID, {
+            spotify: {
+                email: "",
+                accessToken: "",
+                refreshToken: "",
+                connected: false
+            }
+        })
+        return true;
+    }catch (err){
+        console.log(err);
+        return false;
+    }
+}
+
 
 // update settings
 

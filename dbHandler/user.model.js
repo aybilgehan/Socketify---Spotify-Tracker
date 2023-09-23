@@ -30,6 +30,11 @@ const userSchema = new Schema({
 
         refreshToken: {
             type: String
+        },
+
+        connected: {
+            type: Boolean,
+            default: false
         }
     },
 
