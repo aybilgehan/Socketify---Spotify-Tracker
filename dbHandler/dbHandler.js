@@ -32,8 +32,13 @@ exports.checkSpotify = function(userID) {
     return userModel.findById(userID).spotify.connected;
 }
 
+// check spotify account is allready connected before
+exports.checkSpotifyAccount = function(email) {
+    return userModel.findOne({"spotify.email": email});
+}
+
 // connect spotify
-exports.connectSpotify = function(userID, email, accessToken, refreshToken) {
+exports.addSpotifyAccount = function(userID, email, accessToken, refreshToken) {
     try{
         userModel.findByIdAndUpdate(userID, {
             spotify: {
@@ -51,7 +56,7 @@ exports.connectSpotify = function(userID, email, accessToken, refreshToken) {
 }
 
 // delete spotify
-exports.deleteSpotify = function(userID) {
+exports.deleteSpotifyAccount = function(userID) {
     try{
         userModel.findByIdAndUpdate(userID, {
             spotify: {
@@ -68,6 +73,25 @@ exports.deleteSpotify = function(userID) {
     }
 }
 
+// get access token
+exports.getTokens = function(userID) {
+    return userModel.findById(userID).spotify;
+}
+
+// update access token
+exports.updateAccessToken = function(userID, accessToken) {
+    try{
+        userModel.findByIdAndUpdate(userID, {
+            spotify: {
+                accessToken: accessToken
+            }
+        })
+        return true;
+    }catch (err){
+        console.log(err);
+        return false;
+    }
+}
 
 // update settings
 

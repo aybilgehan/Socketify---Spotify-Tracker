@@ -15,9 +15,10 @@ exports.connectSpotify = function() {
     return spotifyApi;
 }
 
-exports.setAccessToken = function(userID, spotifyApi) {
-    dbHandler.getAccessToken(userID).then((data) => {
-        spotifyApi.setAccessToken(data);
+exports.setInitalTokens = function(spotifyApi, userID) {
+    dbHandler.getTokens(userID).then((data) => {
+        spotifyApi.setAccessToken(data.accessToken);
+        spotifyApi.setRefreshToken(data.refreshToken);
     })
 }
 
@@ -33,7 +34,20 @@ exports.refreshToken = function(spotifyApi, userID) {
 // Saniyede istek atıp karşılaştırma
 
 // DB ye kayıt edilirken aynı spotify hesabın başka kişiye kayıtlı olup olmadığının kontrolü
+exports.connectSpotifyAccount = function(userID, email, accessToken, refreshToken) {
+    if(!dbHandler.checkSpotifyAccount(email)) {
+        dbHandler.addSpotifyAccount(userID, email, accessToken, refreshToken);
+        return true;
+    } else {
+        return false;
+    }
+}
 
 // Spotify auth edilme kısmı
+exports.spotifyAuth = function(spotifyApi) {
+    const scopes = ['user-read-private', 'user-read-email', 'user-read-playback-state', 'user-modify-playback-state'];
+    const authorizeURL = spotifyApi.createAuthorizeURL(scopes);
+    return authorizeURL;
+}
 
 
