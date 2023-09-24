@@ -16,6 +16,7 @@
     "mongoose": "^7.5.2",
     "socket.io": "^4.7.2",
     "spotify-web-api-node": "^5.0.2",
+    "twig": "^1.16.0",
     "ws": "^8.14.1"
   }
 }

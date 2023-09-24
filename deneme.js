@@ -4,7 +4,8 @@ const querystring = require('querystring');
 const WebSocket = require('ws'); // Import the ws library
 const SpotifyWebApi = require('spotify-web-api-node');
 const session = require('express-session');
-require('dotenv').config();
+const pageRoute = require("../Socketify/routes/page.router");
+require('dotenv').config();1
 
 
 const app = express();
@@ -126,7 +127,7 @@ app.get('/track', async (req, res) => {
     console.log(req.session.accessToken);
     res.render("index.twig", { accessToken: req.session.accessToken, refreshToken: req.session.refreshToken});
 });
-
+app.use("/", pageRoute);
 // Upgrade incoming HTTP requests to WebSocket connections
 server.on('upgrade', (request, socket, head) => {
     wss.handleUpgrade(request, socket, head, (ws) => {
