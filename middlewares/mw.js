@@ -1,18 +1,16 @@
-const Users = require("../dbHandler/user.model");
-
-
-exports.session = async(req, res,next) => {
-    try {
-
-        let user = await Users.findOne({"email":req.session.user});
-        if (!user) {
-            res.send("köyüne dön"); 
-        }
+exports.checkUserLoggedIn = async(req, res, next) => {
+    if (req.session.user) {
         next();
-
-    } catch (error) {
-        console.log(error);
-
+    } else {
+        res.redirect("/login");
+    }
 }
-console.log("Middleware Çalıştı");
-};
+
+exports.checkUserNotLoggedIn = async(req, res, next) => {
+    if (req.session.user) {
+        res.redirect("/");
+    } else {
+        next();
+    }
+}
+

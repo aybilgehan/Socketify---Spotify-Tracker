@@ -8,10 +8,28 @@ exports.getLoginPage = async(req, res, next) => {
         console.log(error);
 }};
 
+exports.postLoginPage = async(req, res, next) => {
+    try {
+        let user = await Users.findOne({"username":req.body.username});
+        if (!user || user.password != req.body.password) {
+            res.send("köyüne dön"); 
+            return;
+        }else{
+            req.session.user = user.username;
+            req.session.connected = user.spotify.connected;
+            res.redirect("/")
+        }
+    } catch (error) {
+        console.log(error);
+}}
+
 
 exports.getMainPage=async(req,res,next)=>{
     try{
-        res.status(200).render("main")
+        res.status(200).render("main", {
+            user: req.session.user,
+            connected: req.session.connected
+        })
     }
     catch(error){
         console.log(error);
@@ -61,10 +79,11 @@ exports.postRegisterPage = async(req, res, next) => {
     } catch (error) {
         console.log(error);
 }};
+
 exports.getLogoutPage = async(req, res, next) => {
     try {
         req.session.destroy();
-        res.redirect("/");
+        res.redirect("/login");
     } catch (error) {
         console.log(error);
 }};
