@@ -1,6 +1,14 @@
 const Users = require("../dbHandler/user.model.js");
 
 
+exports.getLoginPage = async(req, res, next) => {
+    try {
+        res.status(200).render("login");    
+    } catch (error) {
+        console.log(error);
+}};
+
+
 exports.getMainPage=async(req,res,next)=>{
     try{
         res.status(200).render("main")
