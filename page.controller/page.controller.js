@@ -3,9 +3,7 @@ const Users = require("../dbHandler/user.model.js");
 
 exports.getMainPage=async(req,res,next)=>{
     try{
-        res.status(200).render("main",{
-            user:req.session.user
-        })
+        res.status(200).render("main")
     }
     catch(error){
         console.log(error);
@@ -30,24 +28,28 @@ exports.postMainPage = async(req, res, next) => {
 
 exports.getRegisterPage = async(req, res, next) => {
     try {
-    res.status(200).render("register",{
-        user: req.session.user
-
-    });
+    res.status(200).render("register");
         
     } catch (error) {
         console.log(error);
 }};
 exports.postRegisterPage = async(req, res, next) => {
     try {
-        let user = await Users.findOne({"email":req.body.email})
-        if (user){
-            res.send("Böyle bir kullanıcı zaten var");
+
+        let checkEmail = await Users.findOne({"email":req.body.email})
+        let checkUsername = await Users.findOne({"username":req.body.username})
+        
+        if (checkEmail){
+            res.send("Emaile kayıtlı kullanıcı var");
             return;
-        }else{
-        await Users.create(req.body);
-        res.send("<pre>kullanici olusturuldu.</pre> <a href='/'>Anasayfaya git</a>");
-    }
+        }else if (checkUsername){
+            res.send("Username kayıtlı kullanıcı var");
+            return;
+        }
+        else{
+            await Users.create(req.body);
+            res.send("<pre>kullanici olusturuldu.</pre> <a href='/'>Anasayfaya git</a>");
+        }
     } catch (error) {
         console.log(error);
 }};
