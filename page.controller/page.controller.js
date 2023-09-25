@@ -34,6 +34,7 @@ exports.getRegisterPage = async(req, res, next) => {
         console.log(error);
 }};
 exports.postRegisterPage = async(req, res, next) => {
+    console.log(req.body);
     try {
 
         let checkEmail = await Users.findOne({"email":req.body.email})
