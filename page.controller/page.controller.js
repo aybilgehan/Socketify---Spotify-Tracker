@@ -1,4 +1,12 @@
 const Users = require("../dbHandler/user.model.js");
+const querystring = require('querystring');
+const axios = require('axios');
+require('dotenv').config();
+const SpotifyWebApi = require("../spotifyApi/spotifyHandler.js")
+
+const SPOTIFY_CLIENT_ID =  process.env.SPOTIFY_CLIENT_ID;
+const SPOTIFY_CLIENT_SECRET = process.env.SPOTIFY_CLIENT_SECRET;
+const REDIRECT_URI = process.env.REDIRECT_URI;
 
 
 exports.getLoginPage = async(req, res, next) => {
@@ -87,3 +95,49 @@ exports.getLogoutPage = async(req, res, next) => {
     } catch (error) {
         console.log(error);
 }};
+
+exports.getAuthPage = async(req, res, next) => {
+    const queryParams = querystring.stringify({
+        response_type: 'code',
+        client_id: SPOTIFY_CLIENT_ID,
+        scope: 'user-read-private user-read-email user-read-currently-playing', // Adjust scopes as needed
+        redirect_uri: REDIRECT_URI,
+    });
+
+    res.redirect(`https://accounts.spotify.com/authorize?${queryParams}`);
+}
+
+exports.getCallbackPage = async(req, res, next) => {
+    const code = req.query.code;
+
+    // Exchange the code for an access token
+    const tokenParams = querystring.stringify({
+        grant_type: 'authorization_code',
+        code,
+        redirect_uri: REDIRECT_URI,
+        client_id: SPOTIFY_CLIENT_ID,
+        client_secret: SPOTIFY_CLIENT_SECRET,
+    });
+
+    try {
+        const response = await axios.post('https://accounts.spotify.com/api/token', tokenParams, {
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+        });
+
+        SpotifyWebApi.connectSpotifyAccount(req.session.user, response.data.access_token, response.data.refresh_token).then(
+            (response) => {
+                if (response){
+                    req.session.connected = true;
+                    res.redirect("/")
+                }else{
+                    res.send("Bu hesap zaten başka bir kullanıcıya bağlı")
+                }
+            }
+        )
+    } catch (error) {
+        console.error(error);
+        res.send('Error');
+    }
+}

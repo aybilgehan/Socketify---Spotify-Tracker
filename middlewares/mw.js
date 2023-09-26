@@ -14,3 +14,19 @@ exports.checkUserNotLoggedIn = async(req, res, next) => {
     }
 }
 
+exports.checkSpotifyConnected = async(req, res, next) => {
+    if (req.session.connected) {
+        next();
+    } else {
+        res.redirect("/");
+    }
+}
+
+exports.checkSpotifyNotConnected = async(req, res, next) => {
+    if (req.session.connected) {
+        res.redirect("/");
+    } else {
+        next();
+    }
+}
+
