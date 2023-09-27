@@ -14,7 +14,7 @@ exports.connect = function() {
 
 // Create new user
 exports.addUser = function(username, password, email) {
-    if(!userModel.findOne({username: username}) && !userModel.findOne({email: email})) {
+    try{
         const user = new userModel({
             username: username,
             password: password,
@@ -22,9 +22,10 @@ exports.addUser = function(username, password, email) {
         });
         user.save();
         return true;
-    } else {
-        return false;
+    } catch (err) {
+        console.log(err);
     }
+    
 }
 
 // check spotify is connected   
@@ -73,14 +74,15 @@ exports.deleteSpotifyAccount = function(userID) {
 }
 
 // get access token
-exports.getTokens = function(userID) {
-    return userModel.findById(userID).spotify;
+exports.getTokens =  async function(username) {
+    let user = await userModel.findOne({username: username});
+    return user.spotify;
 }
 
 // update access token
-exports.updateAccessToken = function(userID, accessToken) {
+exports.updateAccessToken = function(username, accessToken) {
     try{
-        userModel.findByIdAndUpdate(userID, {
+        userModel.findOneAndUpdate({username: username}, {
             spotify: {
                 accessToken: accessToken
             }
@@ -96,7 +98,7 @@ exports.updateAccessToken = function(userID, accessToken) {
 exports.getOption = function(username) {
     return userModel.findOne({username: username}).settings.option;
 }
-    
+
 exports.setOption = function(username, option) {
     userModel.findOneAndUpdate({username: username}, {
         settings: {

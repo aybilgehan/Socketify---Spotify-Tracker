@@ -21,7 +21,7 @@
 
     const webSocket = new WebSocket('ws://localhost:8080/');
     webSocket.addEventListener("open", () => {
-      webSocket.send(JSON.stringify({ accessToken: '{{accessToken}}', refreshToken: '{{refreshToken}}' }));
+      webSocket.send("{{username}}")
     });
     webSocket.addEventListener("message", (event) => {
       data = JSON.parse(event.data);

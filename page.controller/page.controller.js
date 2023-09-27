@@ -155,11 +155,18 @@ exports.postSetOption = async(req, res, next) => {
                 }
             })
             req.session.option = req.body.option;
-            res.redirect("/")
         } catch (error) {
             console.log(error);
         }
-    }else{
-        res.redirect("/")
     }
+    res.redirect("/")
 }
+
+exports.getTrackPage = async(req, res, next) => {
+    try {
+        res.status(200).render("index", {
+            username: req.session.user,
+        });
+    } catch (error) {
+        console.log(error);
+}}
