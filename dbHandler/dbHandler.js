@@ -33,14 +33,14 @@ exports.checkSpotify = function(userID) {
 }
 
 // check spotify account is allready connected before
-exports.checkSpotifyAccount = function(email) {
-    return userModel.findOne({"spotify.email": email});
+exports.checkSpotifyAccount = async function(email) {
+    return await userModel.findOne({"spotify.email": email});
 }
 
 // connect spotify
-exports.addSpotifyAccount = function(userID, email, accessToken, refreshToken) {
+exports.addSpotifyAccount = async function(username, email, accessToken, refreshToken) {
     try{
-        userModel.findByIdAndUpdate(userID, {
+        await userModel.findOneAndUpdate({username: username}, {
             spotify: {
                 email: email,
                 accessToken: accessToken,
@@ -48,7 +48,6 @@ exports.addSpotifyAccount = function(userID, email, accessToken, refreshToken) {
                 connected: true
             }
         })
-        return true;
     }catch(err){
         console.log(err);
         return false;

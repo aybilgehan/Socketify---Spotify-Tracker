@@ -1,19 +1,17 @@
 const SpotifyWebApi = require('spotify-web-api-node');
 const dbHandler = require('../dbHandler/dbHandler');
+const userModel = require('../dbHandler/user.model');
 
 const SPOTIFY_CLIENT_ID =  process.env.SPOTIFY_CLIENT_ID;
 const SPOTIFY_CLIENT_SECRET = process.env.SPOTIFY_CLIENT_SECRET;
 const REDIRECT_URI = process.env.REDIRECT_URI;
 
-exports.connectSpotify = function() {
-    const spotifyApi = new SpotifyWebApi({ 
+const spotifyApi = new SpotifyWebApi({ 
         clientId: SPOTIFY_CLIENT_ID,
         clientSecret: SPOTIFY_CLIENT_SECRET,
         redirectUri: REDIRECT_URI,
-    });
+});
 
-    return spotifyApi;
-}
 
 exports.setInitalTokens = function(spotifyApi, userID) {
     dbHandler.getTokens(userID).then((data) => {
@@ -34,13 +32,26 @@ exports.refreshToken = function(spotifyApi, userID) {
 // Saniyede istek atıp karşılaştırma
 
 // DB ye kayıt edilirken aynı spotify hesabın başka kişiye kayıtlı olup olmadığının kontrolü
-exports.connectSpotifyAccount = function(userID, email, accessToken, refreshToken) {
-    if(!dbHandler.checkSpotifyAccount(email)) {
-        dbHandler.addSpotifyAccount(userID, email, accessToken, refreshToken);
-        return true;
-    } else {
-        return false;
-    }
+exports.connectSpotifyAccount = function(username, accessToken, refreshToken) {
+    return new Promise((resolve, reject) => {
+        try{
+            spotifyApi.setAccessToken(accessToken);
+
+            spotifyApi.getMe().then(function(data) {
+                dbHandler.checkSpotifyAccount(data.body.email).then(async (dbdata) => {
+                    if(!dbdata){
+                        await dbHandler.addSpotifyAccount(username, data.body.email, accessToken, refreshToken);
+                        resolve(true);
+                    }else{
+                        resolve(false);
+                    }
+                })
+            })
+        }catch(err){
+            console.log(err);
+            resolve(false);
+        }
+    })
 }
 
 // Spotify auth edilme kısmı
@@ -49,5 +60,3 @@ exports.spotifyAuth = function(spotifyApi) {
     const authorizeURL = spotifyApi.createAuthorizeURL(scopes);
     return authorizeURL;
 }
-
-
