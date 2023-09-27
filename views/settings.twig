@@ -1,3 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ 
+    <title>Styling Website</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 50px;
+        }
+
+        #styleDropdown, #bgColorDropdown, #textColorDropdown {
+            margin: 10px;
+        }
+
+        #resultContainer {
+            margin-top: 30px;
+        }
+    </style>
+</head>
 <form action="/settings" method="POST">
     <h1>Styling Website</h1>
 
@@ -5,7 +28,6 @@
     <select id="styleDropdown" name"styleDropdown">
         <option value="normal">Normal</option>
         <option value="italic">Italic</option>
-        <option value="bold">Bold</option>
     </select>
 
     <br>
@@ -39,8 +61,7 @@
     <input type="submit" class="btn btn-primary" value="Kaydet">
   
 </form>
-
-    <script>
+ <script>
         const styleDropdown = document.getElementById("styleDropdown");
         const bgColorDropdown = document.getElementById("bgColorDropdown");
         const textColorDropdown = document.getElementById("textColorDropdown");
