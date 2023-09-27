@@ -39,17 +39,9 @@ const userSchema = new Schema({
     },
 
     settings: {
-        style: {
+        option: {
             type: String,
-            default: "spotify"
-        },
-        backgroundColor: {
-            type: String,
-            default: "#000000"
-        },
-        textColor: {
-            type: String,
-            default: "#ffffff"
+            default: "Option 1"
         }
     }
 });

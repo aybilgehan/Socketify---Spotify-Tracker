@@ -93,6 +93,18 @@ exports.updateAccessToken = function(userID, accessToken) {
 }
 
 // update settings
+exports.getOption = function(username) {
+    return userModel.findOne({username: username}).settings.option;
+}
+    
+exports.setOption = function(username, option) {
+    userModel.findOneAndUpdate({username: username}, {
+        settings: {
+            option: option
+        }
+    })
+}
+
 
 
 
