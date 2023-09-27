@@ -164,3 +164,11 @@ exports.postSetOption = async(req, res, next) => {
         res.redirect("/")
     }
 }
+exports.getSettingsPage = async(req, res, next) => {
+    try {
+        res.status(200).render("settings");    
+    } catch (error) {
+        console.log(error);
+}};
+
+getSettingsPage

@@ -1,0 +1,64 @@
+<form action="/settings" method="POST">
+    <h1>Styling Website</h1>
+
+    <label for="styleDropdown">Select Style:</label>
+    <select id="styleDropdown" name"styleDropdown">
+        <option value="normal">Normal</option>
+        <option value="italic">Italic</option>
+        <option value="bold">Bold</option>
+    </select>
+
+    <br>
+
+    <label for="bgColorDropdown">Select Background Color:</label>
+    <select id="bgColorDropdown" name"bgColorDropdown">
+        <option value="white">White</option>
+        <option value="lightgray">Light Gray</option>
+        <option value="black">Black</option>
+        <option value="green">Green</option>
+    </select>
+
+    <br>
+
+    <label for="textColorDropdown">Select Text Color:</label>
+    <select id="textColorDropdown" name"textColorDropdown">
+        <option value="black">Black</option>
+        <option value="lightgray">Light Gray</option>
+        <option value="green">Green</option>
+        <option value="white">White</option>
+    </select>
+<div id="resultContainer"class="container">
+    <div class="d-flex justify-content-center align-items-center">
+      <img src="https://prodrumloops.com/wp-content/uploads/2017/11/rikishi-drip.jpg" style="max-height: 20vh; max-width: 20vw; margin-right: 1vw">
+      <div>
+        <h3 id="name">Ric Flair Drip</h3>
+        <h2 id="artist">Metro Boomin,Offset</h2>
+      </div>
+    </div>
+  </div>
+    <input type="submit" class="btn btn-primary" value="Kaydet">
+  
+</form>
+
+    <script>
+        const styleDropdown = document.getElementById("styleDropdown");
+        const bgColorDropdown = document.getElementById("bgColorDropdown");
+        const textColorDropdown = document.getElementById("textColorDropdown");
+        const resultContainer = document.getElementById("resultContainer");
+
+        styleDropdown.addEventListener("change", () => {
+            resultContainer.style.fontStyle = styleDropdown.value;
+        });
+
+        bgColorDropdown.addEventListener("change", () => {
+            // Function to change the background color of the entire webpage
+            document.body.style.backgroundColor = bgColorDropdown.value;
+        });
+
+        textColorDropdown.addEventListener("change", () => {
+            // Function to change the text color of the entire webpage
+            document.body.style.color = textColorDropdown.value;
+        });
+    </script>
+</body>
+</html>

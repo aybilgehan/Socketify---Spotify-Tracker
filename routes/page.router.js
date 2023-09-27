@@ -7,6 +7,7 @@ router.get("/", middleware.checkUserLoggedIn, pageController.getMainPage);
 router.get("/login", middleware.checkUserNotLoggedIn, pageController.getLoginPage)
 router.get("/register", middleware.checkUserNotLoggedIn, pageController.getRegisterPage);
 router.get("/logout", middleware.checkUserLoggedIn, pageController.getLogoutPage);
+router.get("/settings",  pageController.getSettingsPage);
 //router.get("/track", middleware.checkUserLoggedIn, middleware.checkSpotifyConnected, pageController.getTrackPage);
 
 router.get("/auth", middleware.checkUserLoggedIn, middleware.checkSpotifyNotConnected, pageController.getAuthPage);
