@@ -25,6 +25,7 @@ exports.postLoginPage = async(req, res, next) => {
         }else{
             req.session.user = user.username;
             req.session.connected = user.spotify.connected;
+            req.session.option = user.settings.option;
             res.redirect("/")
         }
     } catch (error) {
@@ -36,7 +37,8 @@ exports.getMainPage=async(req,res,next)=>{
     try{
         res.status(200).render("main", {
             user: req.session.user,
-            connected: req.session.connected
+            connected: req.session.connected,
+            option: req.session.option
         })
     }
     catch(error){
@@ -140,5 +142,25 @@ exports.getCallbackPage = async(req, res, next) => {
     } catch (error) {
         console.error(error);
         res.send('Error');
+    }
+}
+
+// Set option
+exports.postSetOption = async(req, res, next) => {
+    console.log(req.body.option, req.session.option)
+    if(req.body.option != req.session.option){
+        try {
+            await Users.findOneAndUpdate({"username":req.session.user}, {
+                settings: {
+                    option: req.body.option
+                }
+            })
+            req.session.option = req.body.option;
+            res.redirect("/")
+        } catch (error) {
+            console.log(error);
+        }
+    }else{
+        res.redirect("/")
     }
 }

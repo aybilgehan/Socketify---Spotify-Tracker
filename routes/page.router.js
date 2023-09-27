@@ -15,6 +15,7 @@ router.get("/callback", pageController.getCallbackPage);
 router.post("/", pageController.postMainPage);
 router.post("/register", pageController.postRegisterPage);
 router.post("/login", pageController.postLoginPage);
+router.post("/set", middleware.checkUserLoggedIn, pageController.postSetOption);
 
 
 

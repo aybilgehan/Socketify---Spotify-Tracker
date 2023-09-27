@@ -16,19 +16,60 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
     integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
     crossorigin="anonymous"></script>
+  <style>
+    .button-container {
+      margin-bottom: 20px;
+    }
+
+    /* Görsel seçenekleri için stiller */
+    .settings-container .image-option {
+      display: inline-block;
+      margin-right: 20px;
+      cursor: pointer;
+    }
+
+    .settings-container .image-option img {
+      max-width: 100%;
+      height: auto;
+      border: 1px solid #ccc;
+      padding: 5px;
+    }
+
+    .settings-container .image-option.selected {
+      border: 2px solid #007bff;
+    }
+  </style>
 </head>
 
 <body>
   <div class="container">
-    {% if connected %}
+    <div class="button-container">
+      {% if connected %}
       <a href="/track">
         <buton class="btn btn-primary">Track</buton>
-    {% else %}
-      <a href="/auth">
-        <buton class="btn btn-primary">Connect Spotify</buton>
+        {% else %}
+        <a href="/auth">
+          <buton class="btn btn-primary">Connect Spotify</buton>
+          {% endif %}
+          <a href="/logout">
+            <buton class="btn btn-primary">Logout</buton>
+    </div>
+    {% if connected %}
+    <div class="settings-container">
+      <form id="optionForm" method="POST" action="/set">
+        <!-- Text options with radio buttons -->
+        <div class="option">
+          <input type="radio" name="option" value="Option 1" id="option1" {% if option == "Option 1" %}checked{% endif %}>
+          <label for="option1">Option 1</label>
+        </div>
+        <div class="option">
+          <input type="radio" name="option" value="Option 2" id="option2" {% if option == "Option 2" %}checked{% endif %}>
+          <label for="option2">Option 2</label>
+        </div>
+        <button type="submit" class="btn btn-success save-button">Save</button>
+      </form>
+    </div>
     {% endif %}
-    <a href="/logout">
-      <buton class="btn btn-primary">Logout</buton>
   </div>
 </body>
 
