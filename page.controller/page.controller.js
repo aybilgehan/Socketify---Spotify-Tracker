@@ -3,6 +3,7 @@ const querystring = require('querystring');
 const axios = require('axios');
 require('dotenv').config();
 const SpotifyWebApi = require("../spotifyApi/spotifyHandler.js")
+const deneme = require("../deneme.js")
 
 const SPOTIFY_CLIENT_ID =  process.env.SPOTIFY_CLIENT_ID;
 const SPOTIFY_CLIENT_SECRET = process.env.SPOTIFY_CLIENT_SECRET;
@@ -162,4 +163,21 @@ exports.postSetOption = async(req, res, next) => {
     }else{
         res.redirect("/")
     }
+}
+
+exports.getTrackPage = async(req, res, next) => {
+    try {
+        res.status(200).render("index", {
+            username: req.session.user,
+            connected: req.session.connected,
+            option: req.session.option
+        })
+    } catch (error) {
+        console.log(error);
+}}
+
+
+exports.postDenemePage = async(req, res, next) => {
+    deneme.send();
+    res.send("oldu")
 }

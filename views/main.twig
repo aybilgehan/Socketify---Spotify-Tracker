@@ -44,6 +44,7 @@
 <body>
   <div class="container">
     <div class="button-container">
+      <buton id="denemeButonu" class="btn btn-primary">Deneme</buton>
       {% if connected %}
       <a href="/track">
         <buton class="btn btn-primary">Track</buton>
@@ -59,11 +60,11 @@
       <form id="optionForm" method="POST" action="/set">
         <!-- Text options with radio buttons -->
         <div class="option">
-          <input type="radio" name="option" value="Option 1" id="option1" {% if option == "Option 1" %}checked{% endif %}>
+          <input type="radio" name="option" value="Option 1" id="option1" {% if option=="Option 1" %}checked{% endif %}>
           <label for="option1">Option 1</label>
         </div>
         <div class="option">
-          <input type="radio" name="option" value="Option 2" id="option2" {% if option == "Option 2" %}checked{% endif %}>
+          <input type="radio" name="option" value="Option 2" id="option2" {% if option=="Option 2" %}checked{% endif %}>
           <label for="option2">Option 2</label>
         </div>
         <button type="submit" class="btn btn-success save-button">Save</button>
@@ -72,5 +73,13 @@
     {% endif %}
   </div>
 </body>
+<script>
+  document.getElementById('denemeButonu').addEventListener('click', function () {
+    // Backend'e HTTP isteği gönder
+    fetch('/deneme', {
+      method: 'POST', // veya 'GET' gibi uygun bir HTTP yöntemi kullanabilirsiniz
+    })
+  });
+</script>
 
 </html>

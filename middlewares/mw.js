@@ -30,3 +30,11 @@ exports.checkSpotifyNotConnected = async(req, res, next) => {
     }
 }
 
+exports.checkSocketConnected = async(req, res, next) => {
+    // DEĞİŞECEK
+    if (!req.session.socketConnected) {
+        next();
+    } else {
+        res.redirect("/");
+    }
+}

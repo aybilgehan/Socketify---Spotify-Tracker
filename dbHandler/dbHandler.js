@@ -80,17 +80,14 @@ exports.getTokens =  async function(username) {
 }
 
 // update access token
-exports.updateAccessToken = function(username, accessToken) {
+exports.updateAccessToken = async function(username, accessToken) {
     try{
-        userModel.findOneAndUpdate({username: username}, {
-            spotify: {
-                accessToken: accessToken
-            }
+        await userModel.findOne({username: username}).then((data) => {
+            data.spotify.accessToken = accessToken;
+            data.save();
         })
-        return true;
     }catch (err){
         console.log(err);
-        return false;
     }
 }
 
