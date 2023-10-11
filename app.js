@@ -3,17 +3,18 @@ const app = express();
 const session = require("express-session");
 require('dotenv').config();
 const dataBase = require('./dbHandler/dbHandler');
-const WebSocket = require('ws');
+const socketIo = require('socket.io');
 const spotifyApi = require("./spotifyApi/spotifyHandler.js");
-const pageController = require("./page.controller/page.controller.js");
-
+const http = require('http');
 
 // Connect to DB
 dataBase.connect();
 
 // Import routes
 const pageRouter = require('./routes/page.router');
-const { set } = require('mongoose');
+
+// Create an HTTP server
+const server = http.createServer(app);
 
 // Middlewares
 app.use(express.json());
@@ -25,7 +26,7 @@ app.use(session({
     resave: true,
     saveUninitialized: true,
     cookie: { secure: false }
-}))   
+}))
 
 // Set view engine
 app.set('view engine', 'twig');
@@ -33,44 +34,44 @@ app.set('view engine', 'twig');
 // Routes
 app.use("/", pageRouter);
 
-
-const server = app.listen(process.env.SOCKET_PORT, () => {
-    console.log(`Server is running on http://localhost:${process.env.SOCKET_PORT}`);
-});
-
-const wss = new WebSocket.Server({ noServer: true });
+// Create a Socket.io instance attached to the HTTP server
+const io = socketIo(server);
 
 const hebele = {}
-wss.on('connection', (ws) => {
+io.on('connection', (socket) => {
     console.log('New connection');
-    ws.on('message', async (message) => {
-        const username = message.toString();
-        if(hebele.hasOwnProperty(username)){
-            ws.terminate();
+
+    socket.on('join', async (username) => {
+        if (hebele.hasOwnProperty(username)) {
+            console.log("girdi")
+            socket.emit("duplicate");
             return;
         }
-        hebele[username] = ws;
-        console.log(hebele);
+        hebele[username] = socket;
         const userSpotifyApi = await spotifyApi.connectSpotify(username);
-        spotifyApi.checkPlaying(ws, userSpotifyApi, username);
-    }) 
+        spotifyApi.denemeCheckPlaying(socket, userSpotifyApi, username);
+    });
 
-    ws.on('close', () => {
+    socket.on('disconnect', () => {
         console.log('Connection closed');
-        
+        // Remove the socket from the hebele object on disconnect
+        const username = Object.keys(hebele).find(key => hebele[key] === socket);
+        if (username) {
+            delete hebele[username];
+        }
+        console.log(hebele)
+        spotifyApi.stopCheckPlaying();
     });
 });
 
-
-exports.send = function (){
+exports.send = function () {
     console.log("sea")
     for (const [key, value] of Object.entries(hebele)) {
-        value.send("deneme");
+        value.emit("konfeti");
+        return;
     }
 }
 
-server.on('upgrade', (request, socket, head) => {
-    wss.handleUpgrade(request, socket, head, (ws) => {
-        wss.emit('connection', ws, request);
-    });
+server.listen(process.env.SOCKET_PORT, () => {
+    console.log(`Server is running on http://localhost:${process.env.SOCKET_PORT}`);
 });

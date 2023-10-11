@@ -1,4 +1,4 @@
-const express = require('express');
+/* const express = require('express');
 const http = require('http');
 const app = express();
 const session = require("express-session");
@@ -6,7 +6,6 @@ require('dotenv').config();
 const dataBase = require('./dbHandler/dbHandler');
 const socketIo = require('socket.io');
 const spotifyApi = require("./spotifyApi/spotifyHandler.js");
-const pageController = require("./page.controller/page.controller.js");
 
 // Connect to DB
 dataBase.connect();
@@ -75,3 +74,4 @@ exports.send = function () {
 server.listen(process.env.SOCKET_PORT, () => {
     console.log(`Server is running on http://localhost:${process.env.SOCKET_PORT}`);
 });
+ */

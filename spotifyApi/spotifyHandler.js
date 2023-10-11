@@ -1,6 +1,7 @@
 const SpotifyWebApi = require('spotify-web-api-node');
 const dbHandler = require('../dbHandler/dbHandler');
 const userModel = require('../dbHandler/user.model');
+const { set } = require('mongoose');
 
 const SPOTIFY_CLIENT_ID = process.env.SPOTIFY_CLIENT_ID;
 const SPOTIFY_CLIENT_SECRET = process.env.SPOTIFY_CLIENT_SECRET;
@@ -11,6 +12,8 @@ const spotifyApi = new SpotifyWebApi({
     clientSecret: SPOTIFY_CLIENT_SECRET,
     redirectUri: REDIRECT_URI,
 });
+
+var checkPlayingIntervalTimeout;
 
 exports.connectSpotify = function (username) {
     return new Promise((resolve, reject) => {
@@ -64,18 +67,37 @@ exports.refreshToken = function (userSpotifyApi, username) {
 
 // Gerekli fonksiyonlara access token aktiflik kontrolü
 
-// Saniyede istek atıp karşılaştırma
-exports.checkPlaying = function (ws, userSpotifyApi, username) {
+// SetInterval Algorithm
+function calculateInterval(skipCount) {
+    return 1000 * Math.pow(2, skipCount);
+}
+
+// Timeout kapatma
+exports.stopCheckPlaying = function () {
+    clearTimeout(checkPlayingIntervalTimeout);
+}
+
+
+exports.denemeCheckPlaying = function (ws, userSpotifyApi, username) {
     api = userSpotifyApi;
     let isPlaying = false;
     let music = "";
+    let duration = 0;
+    let skipCount = 0;
+    let timeout = calculateInterval(skipCount);
 
-    setInterval(() => {
+    var checkPlayingInterval = function () {
         api.getMyCurrentPlayingTrack().then((data) => {
+
+            console.log(`timeout ${timeout} duration ${duration} gerçek duration ${data.body.item.duration_ms - data.body.progress_ms}`)
+            console.log(`fark ${Math.abs(duration - (data.body.item.duration_ms - data.body.progress_ms))}`)
             if (data.statusCode == 200) {
-                if (data.body.item.name != music || data.body.is_playing != isPlaying) {
+
+                if (data.body.item.name != music || data.body.is_playing != isPlaying || Math.abs(duration - (data.body.item.duration_ms - data.body.progress_ms)) > 5000) {
+                    console.log("data gitti")
                     isPlaying = data.body.is_playing;
                     music = data.body.item.name;
+                    duration = data.body.item.duration_ms - data.body.progress_ms;
                     ws.emit("track", JSON.stringify(
                         {
                             "name": data.body.item.name,
@@ -84,19 +106,96 @@ exports.checkPlaying = function (ws, userSpotifyApi, username) {
                             "isPlaying": data.body.is_playing
                         })
                     )
+                    skipCount = 0;
+                    resetTimeout();
+                } else {
+                    if (timeout < duration) {
+                        if (skipCount < 4) {
+                            console.log("skipcount " + skipCount)
+                            skipCount++;
+                        }
+                    } else {
+                        skipCount = Math.round(Math.sqrt(Math.floor(duration / 1000)));
+                        console.log("skiptCount değişti " + skipCount)
+                        resetTimeout();
+                    }
                 }
             }
-        })
-            .catch((err) => {
-                console.log("buraya girdi")
-                console.log(err);
-                api.refreshAccessToken().then((data) => {
-                    api.setAccessToken(data.body['access_token']);
-                    dbHandler.updateAccessToken(username, data.body['access_token']);
-                })
+        }).catch((err) => {
+            console.log("buraya girdi")
+            console.log(err);
+            api.refreshAccessToken().then((data) => {
+                api.setAccessToken(data.body['access_token']);
+                dbHandler.updateAccessToken(username, data.body['access_token']);
             })
+        })
+        duration -= timeout;
+        timeout = calculateInterval(skipCount);
+        checkPlayingIntervalTimeout = setTimeout(checkPlayingInterval, timeout);
+    }
 
-    }, 1000)
+    var resetTimeout = function () {
+        clearTimeout(checkPlayingIntervalTimeout);
+        timeout = calculateInterval(skipCount);
+        checkPlayingIntervalTimeout = setTimeout(checkPlayingInterval, timeout);
+    }
+    
+    checkPlayingIntervalTimeout = setTimeout(checkPlayingInterval, timeout);
+}
+
+
+
+// Saniyede istek atıp karşılaştırma
+exports.checkPlaying = function (ws, userSpotifyApi, username) {
+    api = userSpotifyApi;
+    let isPlaying = false;
+    let music = "";
+    let duration = 0;
+
+    let skipCount = 0;
+
+    setInterval(() => {
+        api.getMyCurrentPlayingTrack().then((data) => {
+            if (data.statusCode == 200) {
+                console.log("girdi " + calculateInterval(skipCount))
+                if (data.body.item.name != music || data.body.is_playing != isPlaying) {
+                    isPlaying = data.body.is_playing;
+                    music = data.body.item.name;
+                    duration = data.body.item.duration_ms;
+                    ws.emit("track", JSON.stringify(
+                        {
+                            "name": data.body.item.name,
+                            "artist": data.body.item.artists[0].name,
+                            "image": data.body.item.album.images[0].url,
+                            "isPlaying": data.body.is_playing
+                        })
+                    )
+                    skipCount = 0;
+                } else {
+                    duration -= calculateInterval(skipCount);
+                    console.log("duration " + duration)
+                    if (calculateInterval(skipCount) < duration) {
+                        if (skipCount < 5) {
+                            console.log("skipcount " + skipCount)
+                            skipCount++;
+
+                        }
+                    } else {
+                        console.log("buraya girdi")
+                        skipCount = duration / 1000;
+                    }
+                }
+            }
+        }).catch((err) => {
+            console.log("buraya girdi")
+            console.log(err);
+            api.refreshAccessToken().then((data) => {
+                api.setAccessToken(data.body['access_token']);
+                dbHandler.updateAccessToken(username, data.body['access_token']);
+            })
+        })
+
+    }, calculateInterval(skipCount))
 }
 
 
