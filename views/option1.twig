@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+<style>
+@import url(https://fonts.googleapis.com/css?family=Open+Sans:300,400,700);
+
+.footer {
+  background: #ff564c;
+  padding: 0;
+  margin: 0;
+}
+
+h2 {
+  margin: 0;
+  padding: 0;
+  font-size: 15px;
+  line-height: 15px;
+  letter-spacing: 2.5px;
+  font-family: 'Open Sans';
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 30px;
+  margin-top: 5px;
+}
+
+h3 {
+  margin: 0;
+  padding: 0;
+  font-size: 15px;
+  line-height: 15px;
+  font-family: 'Open Sans';
+  font-weight: 700;
+  color: #777;
+}
+
+h4 {
+  margin: 0 0 5px 29px;
+  padding: 0;
+  font-size: 14px;
+  line-height: 14px;
+  font-family: 'Open Sans';
+  font-weight: 700;
+  color: #fff;
+}
+
+h5 {
+  margin: 0;
+  padding: 0;
+  font-size: 13px;
+  line-height: 13px;
+  font-family: 'Open Sans';
+  font-weight: 700;
+  color: #6d6d6d;
+}
+
+h6 {
+  margin: 0;
+  padding: 0;
+  font-size: 13px;
+  line-height: 13px;
+  font-family: 'Open Sans';
+  font-weight: 700;
+  color: #f0f0f0;
+}
+
+.screen {
+  background-color: #fff;
+  padding: 0;
+  left: 50%;
+	top: 0;
+  box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.4);
+  overflow: hidden;
+  margin: 30px 0;
+}
+
+.header {
+  display: inline-flex;
+  margin: 0 0 40px 0;
+}
+
+input[type=checkbox] {
+  visibility: hidden;
+  margin: 0;
+  padding: 0;
+  z-index: 10;
+}
+
+
+
+
+.screen > #magicButton:checked ~ label.main:before {
+  color: #ff564c;
+  transition: all 0.3s ease-in;
+}
+
+.coverImage {
+  background: url('https://prodrumloops.com/wp-content/uploads/2017/11/rikishi-drip.jpg');
+  background-size: cover;
+  width: 38vh;
+  height: 20vw;
+  padding: 0;
+  margin: 0;
+  top: 0;
+  left: 0;
+}
+
+.bodyPlayer {
+  display: flex;
+  flex-flow: column wrap;
+  align-items: center;
+  top: 366px;
+  left: 0;
+  margin: 0;
+  padding: 0;
+  width: 35vh;
+  background: #111;
+  transition: all 0.3s ease-in;
+  justify-content: center;
+}
+
+.title {
+  width: 215px;
+  text-align: left;
+  text-indent: 15px;
+  transition: all 0.11s ease-in;
+}
+
+
+.info {
+  display:flex;
+  align-items: center;
+  width: 157px;
+  left: 104px;
+  top: 440px;
+  transition: all 0.3s ease-in;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.player {
+  background: none;
+  text-align: center;
+  font-family: FontAwesome;
+  color: #fff;
+  font-size: 26px;
+  line-height: 26px;
+  width: 216px;
+  height: 35px;
+  bottom: 100px;
+  left: 48%;
+  transform: translate(-50%, 0);
+  z-index: 10;
+  transition: all 0.3s ease-in;
+  border-spacing: 0;
+}
+.player td {
+  width: 72px;
+}
+
+.play:before {
+  content: "\f04b";
+  cursor: pointer;
+  transition: all 0.15s linear;
+}
+
+.play:hover:before {
+  color: #bbb;
+  transition: all 0.15s linear;
+}
+
+
+td > #play:checked ~ label.play:before {
+  content: "\f04c";
+  transition: all 0.15s linear;
+}
+.footer {
+  background: none;
+  font-family: FontAwesome;
+  color: #6d6a6a;
+  font-size: 15px;
+  line-height: 15px;
+  height: 45px;
+  width: 360px;
+  bottom: 10px;
+  left: 23px;
+  z-index: 20;
+  transition: all 0.15s linear;
+  transition: bottom 0.3s linear;
+}
+:root {
+  --button-height: 2rem;
+  --button-color: #edd;
+}
+
+.fake-player {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 4rem;
+  height: 4rem;
+  padding: 2rem;
+  border-radius: 50%;
+  filter: drop-shadow(0 0 3.1rem rgba(255,255,255, 0.8));
+}
+
+button {
+  margin: 0;
+  padding: 0;
+}
+
+.play {
+  height: 0;
+  width: 0;
+  margin-left: calc(2 * 0.14 * var(--button-height));
+  /*margin-left: 17px;*/
+  background: none;
+  border: none;
+  border-top: var(--button-height) solid transparent;
+  border-bottom: var(--button-height) solid transparent;
+  border-left: calc(var(--button-height) * 2 * 0.86) solid var(--button-color);
+  
+}
+
+.pause {
+  background: none;
+  border: none;
+  height: calc(var(--button-height) * 2);
+  width: calc(var(--button-height) * 2 * 0.86);
+  &:before, &:after {
+      content: "";
+      position: absolute;
+      top: 0;
+      height: 100%;
+      width: 33%;
+      background: var(--button-color);
+  }
+  &:before {
+      left: 0;
+  }
+  &:after {
+      right: 0;
+  }
+}
+
+.hidden {
+  display:none;
+}
+.progress-bar {
+  width: 100%;
+  height: 8px;
+  background: #333;
+  margin-top: 10px;
+}
+
+.progress {
+  width: 0;
+  height: 100%;
+  background: #ff564c;
+  transition: width 0.1s linear;
+}
+
+
+</style>
+    
+</head>
+<body>
+    <article class="d-inline-flex p-2 screen">
+
+    <div class="coverImage"></div>
+
+    <div class="bodyPlayer">
+
+				<div class="d-inline-flex p-2 info">
+        
+					<h3 id="name">Ric Flair Drip</h3>
+          <h2 id="artist">Metro Boomin,Offset</h2>
+
+                  <div class="fake-player">
+                    <button role="play" class="play"></button>
+                    <button role="pause" class="pause hidden"></button>
+                  </div>
+                  <div class="progress-bar">
+                <div class="progress"></div>
+            </div>
+				</div>
+      
+					
+		</article>
+</body>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const playButton = document.querySelector('.play');
+    const pauseButton = document.querySelector('.pause');
+    const progressBar = document.querySelector('.progress');
+
+        let isPlaying = false;
+        let currentTime = 0;
+        const duration = 300; // Şarkının toplam süresi saniye cinsinden (örnek değer)
+
+        playButton.addEventListener('click', () => {
+            if (!isPlaying) {
+                // Şarkı çalmaya başladığında ilerleme çubuğunu güncelle
+                progressBar.style.transition = 'width 0.1s linear';
+                playButton.classList.add('hidden');
+                pauseButton.classList.remove('hidden');
+                isPlaying = true;
+                // Şarkı çalma işlemleri burada gerçekleştirilir
+                // Örnek: audioElement.play();
+            }
+        });
+
+        pauseButton.addEventListener('click', () => {
+            if (isPlaying) {
+                // Şarkı durdurulduğunda ilerleme çubuğunu güncelleme
+                progressBar.style.transition = 'none';
+                playButton.classList.remove('hidden');
+                pauseButton.classList.add('hidden');
+                isPlaying = false;
+                // Şarkı durdurma işlemleri burada gerçekleştirilir
+                // Örnek: audioElement.pause();
+            }
+        });
+
+        // Şarkının ilerlemesi için bir zamanlayıcı oluşturun
+        setInterval(() => {
+            if (isPlaying) {
+                currentTime += 1; // Örneğin her saniyede bir artırın
+                const progressPercent = (currentTime / duration) * 100;
+                progressBar.style.width = `${progressPercent}%`;
+            }
+        }, 1000); // Her saniyede bir güncelle
+        });
+
+
+</script>
+</html>

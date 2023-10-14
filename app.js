@@ -27,7 +27,7 @@ app.use(session({
     saveUninitialized: true,
     cookie: { secure: false }
 }))
-
+app.use(express.static(__dirname + '/views'));
 // Set view engine
 app.set('view engine', 'twig');
 
