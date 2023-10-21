@@ -44,16 +44,36 @@
 <body>
   <div class="container">
     <div class="button-container">
-      <buton id="denemeButonu" class="btn btn-primary">Deneme</buton>
       {% if connected %}
-      <a href="/track">
-        <buton class="btn btn-primary">Track</buton>
-        {% else %}
-        <a href="/auth">
-          <buton class="btn btn-primary">Connect Spotify</buton>
-          {% endif %}
+      <div class="container mt-5">
+        <div class="form-group">
+          <label for="url-display">Spotify Track URL</label>
+          <input type="text" class="form-control" id="url-display" readonly>
+          <small class="text-muted"><strong>* URL size özeldir. Başkalarının ele geçirmesi durumunda anında yeni URL
+              üretmelisiniz.</strong></small>
+
+        </div>
+        <div class="d-flex justify-content-between">
+        <div>
+          <button class="btn btn-primary" id="show-url-button">URL'yi Göster</button>
+        <button class="btn btn-primary" id="copy-button">Kopyala</button>
+        <button class="btn btn-success" id="refresh-button">Yeni URL Oluştur</button>
+        </div>
+        <div>
           <a href="/logout">
             <buton class="btn btn-primary">Logout</buton>
+          </a>
+        </div>
+        </div>
+      </div>
+
+
+      {% else %}
+      <a href="/auth">
+        <buton class="btn btn-primary">Connect Spotify</buton>
+      </a>
+      {% endif %}
+
     </div>
     {% if connected %}
     <div class="settings-container">
@@ -72,14 +92,58 @@
     </div>
     {% endif %}
   </div>
+
+
+  <script>
+    const urlDisplay = document.getElementById('url-display');
+    const showUrlButton = document.getElementById('show-url-button');
+    const copyButton = document.getElementById('copy-button');
+    const refreshButton = document.getElementById('refresh-button');
+
+    let originalUrl = "{{trackID}}"; // Backend tarafından alınan URL
+    let urlVisible = false;
+
+    updateUrlVisibility();
+
+    showUrlButton.addEventListener('mousedown', function () {
+      urlVisible = true;
+      updateUrlVisibility();
+    });
+
+    showUrlButton.addEventListener('mouseup', function () {
+      urlVisible = false;
+      updateUrlVisibility();
+    });
+
+    copyButton.addEventListener('click', function () {
+      navigator.clipboard.writeText(originalUrl).then( () =>
+      {
+        alert('URL kopyalandı!');
+      }).catch( () =>
+      {
+        alert('URL kopyalanamadı!');
+      });
+    });
+
+    refreshButton.addEventListener('click', function () {
+      fetch('/refreshURL') // API yolunu kullanarak yeni URL al
+        .then(response => response.json())
+        .then(data => {
+          originalUrl = data.trackID;
+          updateUrlVisibility();
+          alert('Yeni URL oluşturuldu!')
+        })
+        .catch(error => console.error('Hata:', error));
+    });
+
+    function updateUrlVisibility() {
+      if (urlVisible) {
+        urlDisplay.value = originalUrl;
+      } else {
+        urlDisplay.value = '*'.repeat(originalUrl.length);
+      }
+    } 
+  </script>
 </body>
-<script>
-  document.getElementById('denemeButonu').addEventListener('click', function () {
-    // Backend'e HTTP isteği gönder
-    fetch('/deneme', {
-      method: 'POST', // veya 'GET' gibi uygun bir HTTP yöntemi kullanabilirsiniz
-    })
-  });
-</script>
 
 </html>

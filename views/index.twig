@@ -4,6 +4,7 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
   <script src="/socket.io/socket.io.js"></script>
+  <script src="/node_modules/spotify-web-api-js/src/spotify-web-api.js"></script>
 </head>
 
 <body>
@@ -20,23 +21,28 @@
     <canvas id="canvas"></canvas>
   </div>
 </body>
-<script>
-  // Establish a connection to the Socket.io server
-  const socket = io();
 
+
+<script>
+  console.log("aloooooooooo")
+  // Establish a connection to the Socket.io server
+  const socket = new io();
+  const spotifyApi = new SpotifyWebApi();
 
   // Send the username to the server when the connection is established
   socket.on('connect', () => {
+    console.log("connected");
     socket.emit('join', "{{username}}");
   });
 
   // Handle messages received from the server
-  socket.on('track', (event) => {
-    const data = JSON.parse(event);
+  socket.on('track', (accessToken) => {
+    console.log(accessToken);
     console.log("data geldi")
-    document.getElementById('image').src = data.image;
-    document.getElementById('name').innerHTML = data.name;
-    document.getElementById('artist').innerHTML = data.artist;
+    track(accessToken);
+    /*    document.getElementById('image').src = data.image;
+       document.getElementById('name').innerHTML = data.name;
+       document.getElementById('artist').innerHTML = data.artist; */
   });
 
   socket.on('duplicate', () => {
@@ -47,7 +53,7 @@
   })
 
   socket.on('konfeti', (event) => {
-  
+
     canvas.width = width;
     canvas.height = height;
     window.requestAnimationFrame(startConfetti);
@@ -55,104 +61,39 @@
 
   // Handle disconnection from the server
   socket.on('disconnect', () => {
-
+    window.location.href = "/logout";
     console.log("close");
   });
 
-  let canvas = document.getElementById("canvas");
-  let context = canvas.getContext("2d");
-  let width = window.innerWidth;
-  let height = window.innerHeight;
-  let particles = [];
-  let particleSettings = {
-    count: 500,
-    gravity: 0.05,
-    wave: 0,
-  };
 
-  window.requestAnimationFrame =
-    window.requestAnimationFrame ||
-    window.webkitRequestAnimationFrame ||
-    window.mozRequesAnimationFrame ||
-    window.oRequestAnimationFrame ||
-    window.msRequestAnimationFrame ||
-    function (callback) {
-      window.setTimeout(callback, 1000 / 60);
-    };
+  function track(accessToken) {
+    let timeout = 2500;
+    let isPlaying = false;
+    let music = "";
+    let duration = 0;
 
-  //random number between range
-  function randomNumberGenerator(min, max) {
-    return Math.random() * (max - min) + min;
-  }
+    var checkPlayingInterval = function () {
 
-  //Creates Confetti (particles)
-  function createConfetti() {
-    while (particles.length < particleSettings.count) {
-      let particle = new Particle();
-
-      //Random colors
-      particle.color = `rgb( ${randomNumberGenerator(
-        0,
-        255
-      )}, ${randomNumberGenerator(0, 255)}, ${randomNumberGenerator(0, 255)}`;
-      //Store particles
-      particles.push(particle);
+      spotifyApi.setAccessToken(accessToken);
+      spotifyApi.getMyCurrentPlayingTrack().then((data) => {
+        if (data.item.name != music || data.is_playing != isPlaying || Math.abs(duration - data.item.duration_ms - data.progress_ms) > 3000) {
+          music = data.item.name;
+          isPlaying = data.is_playing;
+          duration = data.item.duration_ms - data.progress_ms;
+          document.getElementById('image').src = data.item.album.images[0].url;
+          document.getElementById('name').innerHTML = data.item.name;
+          document.getElementById('artist').innerHTML = data.item.artists[0].name;
+        } else {
+          duration -= timeout;
+        }
+        setTimeout(checkPlayingInterval, timeout);
+      }).catch((err) => {
+        console.log(err)
+        if (err.status == 401) {
+          socket.emit('refreshToken', "{{username}}");
+        }
+      })
     }
+    checkPlayingInterval();
   }
-
-  //Starts the confetti
-  const startConfetti = () => {
-    context.clearRect(0, 0, window.innerWidth, window.innerHeight);
-    createConfetti();
-    for (let i in particles) {
-      //Movement and shaking efffect
-      particleSettings.wave += 0.4;
-      particles[i].tiltAngle += randomNumberGenerator(0.01, 2);
-      particles[i].y +=
-        (Math.sin(particleSettings.wave) +
-          particles[i].area +
-          particleSettings.gravity) *
-        0.2;
-      particles[i].tilt = Math.cos(particles[i].tiltAngle) * 0.3;
-      //Draw the particle on screen
-      particles[i].draw();
-      //if particle has crosses the screen height
-      if (particles[i].y > height) {
-        particles[i] = new Particle();
-        //Random colors
-        particles[i].color = `rgb( ${randomNumberGenerator(
-          0,
-          255
-        )}, ${randomNumberGenerator(0, 255)}, ${randomNumberGenerator(0, 255)}`;
-      }
-    }
-    animationTimer = requestAnimationFrame(startConfetti);
-  };
-
-  function Particle() {
-    this.x = Math.random() * width;
-    this.y = Math.random() * height - height;
-    this.area = randomNumberGenerator(10, 15);
-    this.tilt = randomNumberGenerator(-4, 4);
-    this.tiltAngle = 0;
-  }
-
-  //Mathod associated with particle
-  Particle.prototype = {
-    draw: function () {
-      context.beginPath();
-      context.lineWidth = this.area;
-      context.strokeStyle = this.color;
-      this.x = this.x + this.tilt;
-      context.moveTo(this.x + this.area / 2, this.y);
-      context.lineTo(this.x, this.y + this.tilt + this.area / 2);
-      context.stroke();
-    },
-  };
-
-
 </script>
-
-
-
-</html>

@@ -10,7 +10,6 @@ const http = require('http');
 // Connect to DB
 dataBase.connect();
 
-// Import routes
 const pageRouter = require('./routes/page.router');
 
 // Create an HTTP server
@@ -27,7 +26,7 @@ app.use(session({
     saveUninitialized: true,
     cookie: { secure: false }
 }))
-
+app.use(express.static(__dirname + '/views'));
 // Set view engine
 app.set('view engine', 'twig');
 
@@ -40,7 +39,7 @@ const io = socketIo(server);
 const hebele = {}
 io.on('connection', (socket) => {
     console.log('New connection');
-
+    var userSpotifyApi;
     socket.on('join', async (username) => {
         if (hebele.hasOwnProperty(username)) {
             console.log("girdi")
@@ -48,8 +47,17 @@ io.on('connection', (socket) => {
             return;
         }
         hebele[username] = socket;
-        const userSpotifyApi = await spotifyApi.connectSpotify(username);
-        spotifyApi.denemeCheckPlaying(socket, userSpotifyApi, username);
+        userSpotifyApi = await spotifyApi.connectSpotify(username);
+        socket.emit("track", userSpotifyApi.getAccessToken());
+        //spotifyApi.denemeCheckPlaying(socket, userSpotifyApi, username);
+    });
+
+    socket.on('refreshToken', async () => {
+        userSpotifyApi.refreshAccessToken().then((data) => {
+            userSpotifyApi.setAccessToken(data.body['access_token']);
+            dbHandler.updateAccessToken(username, data.body['access_token']);
+            socket.emit("track", JSON.stringify({"accessToken": data.body['access_token']}));
+        })
     });
 
     socket.on('disconnect', () => {
@@ -64,13 +72,7 @@ io.on('connection', (socket) => {
     });
 });
 
-exports.send = function () {
-    console.log("sea")
-    for (const [key, value] of Object.entries(hebele)) {
-        value.emit("konfeti");
-        return;
-    }
-}
+
 
 server.listen(process.env.SOCKET_PORT, () => {
     console.log(`Server is running on http://localhost:${process.env.SOCKET_PORT}`);

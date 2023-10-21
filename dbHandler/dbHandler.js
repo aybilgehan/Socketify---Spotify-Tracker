@@ -1,9 +1,10 @@
 const mongoose = require('mongoose');
 const userModel = require('./user.model');
 require('dotenv').config();
+const { v4: uuidv4 } = require('uuid');
 
 // Connect to MongoDB
-exports.connect = function() {
+exports.connect = function () {
     mongoose.connect(process.env.MONGODB_URL, {
         useNewUrlParser: true,
         useUnifiedTopology: true,
@@ -13,8 +14,8 @@ exports.connect = function() {
 }
 
 // Create new user
-exports.addUser = function(username, password, email) {
-    try{
+exports.addUser = function (username, password, email) {
+    try {
         const user = new userModel({
             username: username,
             password: password,
@@ -25,23 +26,24 @@ exports.addUser = function(username, password, email) {
     } catch (err) {
         console.log(err);
     }
-    
+
 }
 
 // check spotify is connected   
-exports.checkSpotify = function(userID) {
+exports.checkSpotify = function (userID) {
     return userModel.findById(userID).spotify.connected;
 }
 
 // check spotify account is allready connected before
-exports.checkSpotifyAccount = async function(email) {
-    return await userModel.findOne({"spotify.email": email});
+exports.checkSpotifyAccount = async function (email) {
+    return await userModel.findOne({ "spotify.email": email });
 }
 
 // connect spotify
-exports.addSpotifyAccount = async function(username, email, accessToken, refreshToken) {
-    try{
-        await userModel.findOneAndUpdate({username: username}, {
+exports.addSpotifyAccount = async function (username, email, accessToken, refreshToken) {
+    try {
+        await userModel.findOneAndUpdate({ username: username }, {
+            trackID: uuidv4(),
             spotify: {
                 email: email,
                 accessToken: accessToken,
@@ -49,15 +51,16 @@ exports.addSpotifyAccount = async function(username, email, accessToken, refresh
                 connected: true
             }
         })
-    }catch(err){
+        return true;
+    } catch (err) {
         console.log(err);
         return false;
     }
 }
 
 // delete spotify
-exports.deleteSpotifyAccount = function(userID) {
-    try{
+exports.deleteSpotifyAccount = function (userID) {
+    try {
         userModel.findByIdAndUpdate(userID, {
             spotify: {
                 email: "",
@@ -67,41 +70,62 @@ exports.deleteSpotifyAccount = function(userID) {
             }
         })
         return true;
-    }catch (err){
+    } catch (err) {
         console.log(err);
         return false;
     }
 }
 
 // get access token
-exports.getTokens =  async function(username) {
-    let user = await userModel.findOne({username: username});
-    return user.spotify;
+exports.getTokens = async function (username) {
+    return new Promise((resolve) => {
+        try {
+            console.log(username)
+            userModel.findOne({ username: username }).then((data) => {
+                resolve(data.spotify);
+            })
+        } catch (err) {
+            console.log(err);
+            resolve(false);
+        }
+    })
 }
 
 // update access token
-exports.updateAccessToken = async function(username, accessToken) {
-    try{
-        await userModel.findOne({username: username}).then((data) => {
+exports.updateAccessToken = async function (username, accessToken) {
+    try {
+        await userModel.findOne({ username: username }).then((data) => {
             data.spotify.accessToken = accessToken;
             data.save();
         })
-    }catch (err){
+    } catch (err) {
         console.log(err);
     }
 }
 
 // update settings
-exports.getOption = function(username) {
-    return userModel.findOne({username: username}).settings.option;
+exports.getOption = function (username) {
+    return userModel.findOne({ username: username }).settings.option;
 }
 
-exports.setOption = function(username, option) {
-    userModel.findOneAndUpdate({username: username}, {
+exports.setOption = function (username, option) {
+    userModel.findOneAndUpdate({ username: username }, {
         settings: {
             option: option
         }
     })
+}
+
+exports.getUserCredentialsForTrack = async function (trackID) {
+
+    try {
+        let user = await userModel.findOne({ trackID: trackID });
+        return user.username;
+
+    } catch (err) {
+        console.log("girdi")
+        console.log(err);
+    }
 }
 
 

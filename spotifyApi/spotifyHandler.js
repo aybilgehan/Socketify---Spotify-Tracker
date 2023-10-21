@@ -28,8 +28,12 @@ exports.connectSpotify = function (username) {
             });
 
             dbHandler.getTokens(username).then((data) => {
-                spotifyApi.setAccessToken(data.accessToken);
-                spotifyApi.setRefreshToken(data.refreshToken);
+                if (data){
+                    spotifyApi.setAccessToken(data.accessToken);
+                    spotifyApi.setRefreshToken(data.refreshToken);
+                }else{
+                    resolve(false);
+                }
             }).then(() => {
                 resolve(spotifyApi);
             })
@@ -204,12 +208,10 @@ exports.connectSpotifyAccount = function (username, accessToken, refreshToken) {
     return new Promise((resolve, reject) => {
         try {
             spotifyApi.setAccessToken(accessToken);
-
             spotifyApi.getMe().then(function (data) {
                 dbHandler.checkSpotifyAccount(data.body.email).then(async (dbdata) => {
                     if (!dbdata) {
-                        await dbHandler.addSpotifyAccount(username, data.body.email, accessToken, refreshToken);
-                        resolve(true);
+                        resolve(await dbHandler.addSpotifyAccount(username, data.body.email, accessToken, refreshToken));                       
                     } else {
                         resolve(false);
                     }
@@ -228,3 +230,4 @@ exports.spotifyAuth = function (spotifyApi) {
     const authorizeURL = spotifyApi.createAuthorizeURL(scopes);
     return authorizeURL;
 }
+

@@ -9,14 +9,19 @@ const userSchema = new Schema({
     },
 
     email: {
-        type:String,
+        type: String,
         require: true,
         unique: true
     },
 
     password: {
-        type:String,
+        type: String,
         require: true
+    },
+
+    trackID: {
+        type: String,
+        unique: true
     },
 
     spotify: {
