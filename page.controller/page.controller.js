@@ -3,8 +3,8 @@ const querystring = require('querystring');
 const axios = require('axios');
 require('dotenv').config();
 const SpotifyWebApi = require("../spotifyApi/spotifyHandler.js")
-const deneme = require("../deneme.js")
 const { v4: uuidv4 } = require('uuid');
+const webSocket = require("../webSocket/webSocket.js")
 
 const DBHandler = require("../dbHandler/dbHandler.js")
 
@@ -190,11 +190,11 @@ exports.postSetOption = async (req, res, next) => {
 }}
  */
 
-exports.postDenemePage = async (req, res, next) => {
+/* exports.postDenemePage = async (req, res, next) => {
     deneme.send();
     res.send("oldu")
 }
-
+ */
 exports.getTrackPage = async (req, res, next) => {
     try {
         await Users.find({ trackID: req.params.trackID }).then((data) => {
@@ -221,7 +221,7 @@ exports.refreshURL = async (req, res, next) => {
             let newTrackID = uuidv4();
             user.trackID = newTrackID;
             user.save();
-            deneme.disconnectUserWhenUrlRefreshed(req.session.user);
+            webSocket.disconnectUserWhenUrlRefreshed(req.session.user);
             res.json({ trackID: "http://localhost:8080/track/" + newTrackID });
         }else{
             res.send("error")

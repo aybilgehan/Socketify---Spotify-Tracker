@@ -19,7 +19,7 @@ router.post("/login", pageController.postLoginPage);
 router.post("/set", middleware.checkUserLoggedIn, pageController.postSetOption);
 
 
-router.post("/deneme", pageController.postDenemePage)
+//router.post("/deneme", pageController.postDenemePage)
 
 
 

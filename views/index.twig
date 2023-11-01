@@ -24,7 +24,6 @@
 
 
 <script>
-  console.log("aloooooooooo")
   // Establish a connection to the Socket.io server
   const socket = new io();
   const spotifyApi = new SpotifyWebApi();
@@ -37,12 +36,7 @@
 
   // Handle messages received from the server
   socket.on('track', (accessToken) => {
-    console.log(accessToken);
-    console.log("data geldi")
     track(accessToken);
-    /*    document.getElementById('image').src = data.image;
-       document.getElementById('name').innerHTML = data.name;
-       document.getElementById('artist').innerHTML = data.artist; */
   });
 
   socket.on('duplicate', () => {
@@ -52,13 +46,6 @@
     }, 10000)
   })
 
-  socket.on('konfeti', (event) => {
-
-    canvas.width = width;
-    canvas.height = height;
-    window.requestAnimationFrame(startConfetti);
-  });
-
   // Handle disconnection from the server
   socket.on('disconnect', () => {
     window.location.href = "/logout";
@@ -67,32 +54,43 @@
 
 
   function track(accessToken) {
-    let timeout = 2500;
+    let timeout = 1000;
     let isPlaying = false;
     let music = "";
     let duration = 0;
 
+    spotifyApi.setAccessToken(accessToken);
+
     var checkPlayingInterval = function () {
 
-      spotifyApi.setAccessToken(accessToken);
       spotifyApi.getMyCurrentPlayingTrack().then((data) => {
-        if (data.item.name != music || data.is_playing != isPlaying || Math.abs(duration - data.item.duration_ms - data.progress_ms) > 3000) {
-          music = data.item.name;
-          isPlaying = data.is_playing;
-          duration = data.item.duration_ms - data.progress_ms;
-          document.getElementById('image').src = data.item.album.images[0].url;
-          document.getElementById('name').innerHTML = data.item.name;
-          document.getElementById('artist').innerHTML = data.item.artists[0].name;
-        } else {
-          duration -= timeout;
+        if (data) {
+          console.log(data.is_playing)
+          if (data.is_playing) {
+            if (data.item.name != music || Math.abs(duration - data.item.duration_ms - data.progress_ms) > 3000) {
+              music = data.item.name;
+              duration = data.item.duration_ms - data.progress_ms;
+              document.getElementById('image').src = data.item.album.images[0].url;
+              document.getElementById('name').innerHTML = data.item.name;
+              document.getElementById('artist').innerHTML = data.item.artists[0].name;
+            } else {
+              duration -= timeout;
+            }
+          }else{
+            document.getElementById('image').src = "";
+            document.getElementById('name').innerHTML = "";
+            document.getElementById('artist').innerHTML = "";
+          }
         }
         setTimeout(checkPlayingInterval, timeout);
+
       }).catch((err) => {
         console.log(err)
         if (err.status == 401) {
           socket.emit('refreshToken', "{{username}}");
         }
       })
+
     }
     checkPlayingInterval();
   }

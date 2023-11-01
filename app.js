@@ -6,16 +6,19 @@ const dataBase = require('./dbHandler/dbHandler');
 const socketIo = require('socket.io');
 const spotifyApi = require("./spotifyApi/spotifyHandler.js");
 const http = require('http');
+const dbHandler = require('./dbHandler/dbHandler');
 
 // Connect to DB
 dataBase.connect();
 
+// Import routes
 const pageRouter = require('./routes/page.router');
 
 // Create an HTTP server
 const server = http.createServer(app);
 
 // Middlewares
+app.use(express.static(__dirname + '/'));
 app.use(express.json());
 app.use(express.urlencoded({
     extended: true
@@ -26,7 +29,7 @@ app.use(session({
     saveUninitialized: true,
     cookie: { secure: false }
 }))
-app.use(express.static(__dirname + '/views'));
+
 // Set view engine
 app.set('view engine', 'twig');
 
@@ -41,6 +44,7 @@ io.on('connection', (socket) => {
     console.log('New connection');
     var userSpotifyApi;
     socket.on('join', async (username) => {
+        console.log("username geldi " + username)
         if (hebele.hasOwnProperty(username)) {
             console.log("girdi")
             socket.emit("duplicate");
@@ -52,11 +56,12 @@ io.on('connection', (socket) => {
         //spotifyApi.denemeCheckPlaying(socket, userSpotifyApi, username);
     });
 
-    socket.on('refreshToken', async () => {
+    socket.on('refreshToken', async (username) => {
         userSpotifyApi.refreshAccessToken().then((data) => {
+            console.log("geldi")
             userSpotifyApi.setAccessToken(data.body['access_token']);
             dbHandler.updateAccessToken(username, data.body['access_token']);
-            socket.emit("track", JSON.stringify({"accessToken": data.body['access_token']}));
+            socket.emit("track", data.body['access_token']);
         })
     });
 
@@ -68,11 +73,22 @@ io.on('connection', (socket) => {
             delete hebele[username];
         }
         console.log(hebele)
-        spotifyApi.stopCheckPlaying();
     });
 });
 
+exports.send = function () {
+    console.log("sea")
+    for (const [key, value] of Object.entries(hebele)) {
+        value.emit("konfeti");
+        return;
+    }
+}
 
+exports.disconnectUserWhenUrlRefreshed = function (username) {
+    if (hebele.hasOwnProperty(username)) {
+        hebele[username].disconnect();
+    }
+}
 
 server.listen(process.env.SOCKET_PORT, () => {
     console.log(`Server is running on http://localhost:${process.env.SOCKET_PORT}`);
