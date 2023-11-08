@@ -11,7 +11,8 @@ exports.connect = async function () {
         useUnifiedTopology: true,
     }).then(() => {
         console.log('DB connection is set.')
-    }).catch(() => {
+    }).catch((error) => {
+        console.log(error);
         exit(console.log("DB connection is not set."));
     });
 } 
