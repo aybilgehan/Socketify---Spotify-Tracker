@@ -28,5 +28,8 @@
     "spotify-web-api-node": "^5.0.2",
     "twig": "^1.16.0",
     "uuid": "^9.0.1"
+  },
+  "engines": {
+    "node": "16.13.0"
   }
 }
