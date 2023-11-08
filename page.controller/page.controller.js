@@ -32,7 +32,7 @@ exports.postLoginPage = async (req, res, next) => {
             req.session.connected = user.spotify.connected;
             req.session.option = user.settings.option;
             if(user.spotify.connected){
-                req.session.trackID = "http://localhost/track/"+user.trackID;
+                req.session.trackID = "https://socketify-7256.onrender.com/track/"+user.trackID;
             }
             res.redirect("/")
         }
@@ -221,7 +221,7 @@ exports.refreshURL = async (req, res, next) => {
             user.trackID = newTrackID;
             user.save();
             webSocket.disconnectUserWhenUrlRefreshed(req.session.user);
-            res.json({ trackID: "http://localhost/track/" + newTrackID });
+            res.json({ trackID: "https://socketify-7256.onrender.com/track/" + newTrackID });
         }else{
             res.send("error")
         }
