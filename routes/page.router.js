@@ -2,13 +2,7 @@ const express = require("express");
 const router = express.Router();
 const pageController = require("../page.controller/page.controller.js");
 const middleware = require("../middlewares/mw.js");
-const { rateLimit } = require('express-rate-limit')
 
-const limiter = rateLimit({
-    windowMs: 60 * 1000,
-    max: 5,
-    message: "Too many requests from this IP, please try again in an hour!"
-})
 
 router.get("/", middleware.checkUserLoggedIn, pageController.getMainPage);
 router.get("/login", middleware.checkUserNotLoggedIn, pageController.getLoginPage)
@@ -19,7 +13,7 @@ router.get("/track/:trackID", pageController.getTrackPage)
 
 router.get("/auth", middleware.checkUserLoggedIn, middleware.checkSpotifyNotConnected, pageController.getAuthPage);
 router.get("/callback", pageController.getCallbackPage);
-router.get("/refreshURL", limiter, middleware.checkUserLoggedIn, middleware.checkSpotifyConnected, pageController.refreshURL);
+router.get("/refreshURL", middleware.checkUserLoggedIn, middleware.checkSpotifyConnected, pageController.refreshURL);
 router.post("/", pageController.postMainPage);
 router.post("/register", pageController.postRegisterPage);
 router.post("/login", pageController.postLoginPage);
