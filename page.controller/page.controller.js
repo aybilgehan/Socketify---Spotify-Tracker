@@ -32,7 +32,7 @@ exports.postLoginPage = async (req, res, next) => {
             req.session.connected = user.spotify.connected;
             req.session.option = user.settings.option;
             if(user.spotify.connected){
-                req.session.trackID = "http://localhost:8080/track/"+user.trackID;
+                req.session.trackID = "http://localhost/track/"+user.trackID;
             }
             res.redirect("/")
         }
@@ -44,6 +44,7 @@ exports.postLoginPage = async (req, res, next) => {
 
 exports.getMainPage = async (req, res, next) => {
     try {
+        console.log(req.ip)
         res.status(200).render("main", {
             user: req.session.user,
             connected: req.session.connected,
@@ -106,7 +107,7 @@ exports.postRegisterPage = async (req, res, next) => {
 
 exports.getLogoutPage = async (req, res, next) => {
     try {
-        req.session.destroy();
+        req.session = null;
         res.redirect("/login");
     } catch (error) {
         console.log(error);
@@ -209,7 +210,6 @@ exports.getTrackPage = async (req, res, next) => {
 
 
     } catch (err) {
-        console.log(err);
         res.send("Yanlış track id")
     }
 }
@@ -222,7 +222,7 @@ exports.refreshURL = async (req, res, next) => {
             user.trackID = newTrackID;
             user.save();
             webSocket.disconnectUserWhenUrlRefreshed(req.session.user);
-            res.json({ trackID: "http://localhost:8080/track/" + newTrackID });
+            res.json({ trackID: "http://localhost/track/" + newTrackID });
         }else{
             res.send("error")
         }

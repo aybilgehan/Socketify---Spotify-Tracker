@@ -2,14 +2,17 @@ const mongoose = require('mongoose');
 const userModel = require('./user.model');
 require('dotenv').config();
 const { v4: uuidv4 } = require('uuid');
+const { exit } = require('process');
 
 
-exports.connect = function () {
+exports.connect = async function () {
     mongoose.connect(process.env.MONGODB_URL_DENEME, {
         useNewUrlParser: true,
         useUnifiedTopology: true,
     }).then(() => {
         console.log('DB connection is set.')
+    }).catch(() => {
+        exit(console.log("DB connection is not set."));
     });
 } 
 
