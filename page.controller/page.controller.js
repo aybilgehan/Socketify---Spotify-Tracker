@@ -44,7 +44,6 @@ exports.postLoginPage = async (req, res, next) => {
 
 exports.getMainPage = async (req, res, next) => {
     try {
-        console.log(req.ip)
         res.status(200).render("main", {
             user: req.session.user,
             connected: req.session.connected,
