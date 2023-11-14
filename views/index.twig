@@ -20,7 +20,7 @@
     margin: 0;
   }
 
-  .spotify-widget {
+  #spotify-widget {
     background-color: #121212;
     border-radius: 10px;
     overflow: hidden;
@@ -94,7 +94,7 @@
 </style>
 
 <body>
-  <div class="spotify-widget">
+  <div id="spotify-widget">
     <img alt="Album Cover" id="albumCover"
       class="album-cover">
     <div class="track-info">
@@ -115,7 +115,7 @@
 <script>
 
   // Get the elements from the DOM
-  const spotifyWidgetElement = document.getElementsByClassName("spotify-widget");
+  const spotifyWidgetElement = document.getElementsById("spotify-widget");
   const albumCoverElement = document.getElementById("albumCover");
   const musicNameElement = document.getElementById("musicName");
   const artistNameElement = document.getElementById("artistName");
