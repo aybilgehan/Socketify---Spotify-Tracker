@@ -101,13 +101,13 @@
       <p id="artistName" class="artist-name"></p>
       <div class="progress-container">
         <div class="time-info" id="currentDurationInfo"></div>
-          <div class="time-bar-background">
-            <div class="time-bar" id="timeBar"></div>
-          </div>
-          <div class="time-info" id="durationInfo"></div>
+        <div class="time-bar-background">
+          <div class="time-bar" id="timeBar"></div>
         </div>
+        <div class="time-info" id="durationInfo"></div>
       </div>
     </div>
+  </div>
 </body>
 
 
@@ -168,7 +168,7 @@
             if (window.getComputedStyle(spotifyWidgetElement).display == "none") {
               spotifyWidgetElement.style.display = "flex";
             }
-            console.log(Math.abs(currentDuration - data.progress_ms) );
+            console.log(currentDuration - data.progress_ms);
             if (data.item.name != musicName || data.item.artists[0].name != artistName || Math.abs(currentDuration - data.progress_ms) > 3000) {
               console.log("update");
               musicName = data.item.name;
@@ -180,9 +180,9 @@
               musicNameElement.textContent = data.item.name;
               artistNameElement.textContent = data.item.artists[0].name;
 
-            } 
-            currentDuration += timeout;
-            
+            }
+            currentDuration += timeout + 150;
+
           } else {
             if (window.getComputedStyle(spotifyWidgetElement).display == "flex") {
               spotifyWidgetElement.style.display = "none";
