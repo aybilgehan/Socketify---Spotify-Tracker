@@ -168,10 +168,8 @@
             if (window.getComputedStyle(spotifyWidgetElement).display == "none") {
               spotifyWidgetElement.style.display = "flex";
             }
-            console.log(currentDuration, data.progress_ms, Math.abs(currentDuration - data.progress_ms));
-            if (data.item.name != musicName || data.item.artistName != artistName || Math.abs(currentDuration - data.progress_ms) > 3000) {
+            if (data.item.name != musicName || data.item.artists[0].name != artistName || Math.abs(currentDuration - data.progress_ms) > 3000) {
               console.log("update");
-              console.log(data.item.name != musicName, data.item.artistName != artistName, Math.abs(currentDuration - data.progress_ms) > 3000)
               musicName = data.item.name;
               artistName = data.item.artists[0].name;
               currentDuration = data.progress_ms;
