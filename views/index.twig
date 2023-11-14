@@ -25,7 +25,7 @@
     border-radius: 10px;
     overflow: hidden;
     width: 90vw;
-    display: flex;
+    display: none;
     align-items: center;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
   }
@@ -115,7 +115,7 @@
 <script>
 
   // Get the elements from the DOM
-  const spotifyWidgetElement = document.getElementsByClassName("spotify-widget")[0];
+  const spotifyWidgetElement = document.getElementsByClassName("spotify-widget");
   const albumCoverElement = document.getElementById("albumCover");
   const musicNameElement = document.getElementById("musicName");
   const artistNameElement = document.getElementById("artistName");
@@ -164,7 +164,6 @@
       var duration = 0;
       spotifyApi.getMyCurrentPlayingTrack().then((data) => {
         if (data) {
-          console.log(data.is_playing)
           if (data.is_playing) {
             if (spotifyWidgetElement.style.display == "none") {
               spotifyWidgetElement.style.display = "flex";
@@ -187,6 +186,7 @@
               spotifyWidgetElement.style.display = "none";
             }
           }
+          console.log(currentDuration / 1000, duration / 1000)
           updateProgressBar(currentDuration / 1000, duration / 1000);
         }
         setTimeout(checkPlayingInterval, timeout);
