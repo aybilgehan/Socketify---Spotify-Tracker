@@ -165,6 +165,7 @@
       spotifyApi.getMyCurrentPlayingTrack().then((data) => {
         if (data) {
           if (data.is_playing) {
+            console.log(spotifyWidgetElement.style.display)
             if (spotifyWidgetElement.style.display == "none") {
               spotifyWidgetElement.style.display = "flex";
             }
