@@ -28,6 +28,7 @@
     display: none;
     align-items: center;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+    padding: 1vw;
   }
 
   .album-cover {
@@ -36,20 +37,26 @@
     height: 20vw;
     /* Adjusted to viewport width */
     border-radius: 8px;
-    margin-right: 15px;
   }
 
   .track-info {
+    display: flex;
+    flex-direction: column;
     flex-grow: 1;
-    padding: 15px;
+    margin: 0 1vw 0 2vw;
   }
 
   .music-name,
   .artist-name {
     margin: 0;
-    font-size: 3vw;
+    font-size: 5vw;
     /* Adjusted to viewport width */
-    color: #1DB954;
+    color: #fff;
+  }
+  .artist-name {
+    font-size: 3vw;
+    color: #ccc;
+    margin-bottom: 5vh;
   }
 
   .time-info {
@@ -169,7 +176,7 @@
               spotifyWidgetElement.style.display = "flex";
             }
             console.log(currentDuration,data.progress_ms,currentDuration - data.progress_ms);
-            if (data.item.name != musicName || data.item.artists[0].name != artistName || Math.abs(Math.round(currentDuration) - Math.round(data.progress_ms)) > 3000) {
+            if (data.item.name != musicName || data.item.artists[0].name != artistName || Math.abs(currentDuration - data.progress_ms) > 3000) {
               console.log("update");
               musicName = data.item.name;
               artistName = data.item.artists[0].name;
@@ -190,7 +197,7 @@
           }
           updateProgressBar(currentDuration / 1000, duration / 1000);
         }
-        setTimeout(checkPlayingInterval, timeout- 100);
+        setTimeout(checkPlayingInterval, timeout- 150);
 
       }).catch((err) => {
         console.log(err)
