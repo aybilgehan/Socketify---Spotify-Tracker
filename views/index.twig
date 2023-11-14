@@ -99,12 +99,12 @@
     <div class="track-info">
       <p id="musicName" class="music-name"></p>
       <p id="artistName" class="artist-name"></p>
-      <div class="progress-container ">
-        <div class="time-info " id="currentDurationInfo" </div>
+      <div class="progress-container">
+        <div class="time-info" id="currentDurationInfo"></div>
           <div class="time-bar-background">
-            <div class="time-bar " id="timeBar"></div>
+            <div class="time-bar" id="timeBar"></div>
           </div>
-          <div class="time-info " id="durationInfo"></div>
+          <div class="time-info" id="durationInfo"></div>
         </div>
       </div>
     </div>
@@ -170,6 +170,8 @@
             }
             console.log(currentDuration, data.progress_ms, Math.abs(currentDuration - data.progress_ms));
             if (data.item.name != musicName || data.item.artistName != artistName || Math.abs(currentDuration - data.progress_ms) > 3000) {
+              console.log("update");
+              console.log(data.item.name != musicName, data.item.artistName != artistName, Math.abs(currentDuration - data.progress_ms) > 3000)
               musicName = data.item.name;
               artistName = data.item.artists[0].name;
               currentDuration = data.progress_ms;
