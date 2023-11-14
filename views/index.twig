@@ -95,20 +95,19 @@
 
 <body>
   <div id="spotify-widget">
-    <img alt="Album Cover" id="albumCover"
-      class="album-cover">
+    <img alt="Album Cover" id="albumCover" class="album-cover">
     <div class="track-info">
       <p id="musicName" class="music-name"></p>
       <p id="artistName" class="artist-name"></p>
       <div class="progress-container ">
-        <div class="time-info " id="currentDurationInfo"</div>
-        <div class="time-bar-background">
-          <div class="time-bar " id="timeBar"></div>
+        <div class="time-info " id="currentDurationInfo" </div>
+          <div class="time-bar-background">
+            <div class="time-bar " id="timeBar"></div>
+          </div>
+          <div class="time-info " id="durationInfo"></div>
         </div>
-        <div class="time-info " id="durationInfo"></div>
       </div>
     </div>
-  </div>
 </body>
 
 
@@ -123,7 +122,7 @@
   const durationInfoElement = document.getElementById("durationInfo");
   const timeBarElement = document.getElementById("timeBar");
 
-  
+
   // Establish a connection to the Socket.io server
   const socket = new io();
   const spotifyApi = new SpotifyWebApi();
@@ -154,23 +153,25 @@
 
 
   function track(accessToken) {
+    var musicName = "";
+    var artistName = "";
+    var currentDuration = 0;
+    var duration = 0;
     let timeout = 1000;
+
     spotifyApi.setAccessToken(accessToken);
 
     var checkPlayingInterval = function () {
-      var musicName = "";
-      var artistName = "";
-      var currentDuration = 0;
-      var duration = 0;
+
       spotifyApi.getMyCurrentPlayingTrack().then((data) => {
         if (data) {
           if (data.is_playing) {
-            console.log(spotifyWidgetElement.style.display)
+            console.log(window.getComputedStyle(spotifyWidgetElement).display)
             if (spotifyWidgetElement.style.display == "none") {
               spotifyWidgetElement.style.display = "flex";
             }
-            if (data.item.name != musicName || data.item.artistName != artistName || Math.abs(currentDuration -  data.progress_ms) > 3000) {
-              console.log(currentDuration -  data.progress_ms, data.progress_ms)
+            if (data.item.name != musicName || data.item.artistName != artistName || Math.abs(currentDuration - data.progress_ms) > 3000) {
+              console.log(currentDuration - data.progress_ms, data.progress_ms)
               musicName = data.item.name;
               artistName = data.item.artists[0].name;
               currentDuration = data.progress_ms;
@@ -204,21 +205,21 @@
   }
 
   function updateProgressBar(currentDuration, duration) {
-        const progress = (currentDuration/duration) * 100;
-        timeBarElement.style.width = `${progress}%`; // Erase to white
-        timeBarElement.style.backgroundColor = '#fff'; // White
+    const progress = (currentDuration / duration) * 100;
+    timeBarElement.style.width = `${progress}%`; // Erase to white
+    timeBarElement.style.backgroundColor = '#fff'; // White
 
-        // Format time info
-        const formattedCurrentTime = formatTime(currentDuration);
-        const formattedDuration = formatTime(duration);
-        timeInfoElement.textContent = formattedCurrentTime;
-        durationInfoElement.textContent = formattedDuration;
-    }
+    // Format time info
+    const formattedCurrentTime = formatTime(currentDuration);
+    const formattedDuration = formatTime(duration);
+    timeInfoElement.textContent = formattedCurrentTime;
+    durationInfoElement.textContent = formattedDuration;
+  }
 
-    // Format time in MM:SS
-    function formatTime(timeInSeconds) {
-        const minutes = Math.floor(timeInSeconds / 60);
-        const seconds = Math.floor(timeInSeconds % 60);
-        return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
-    }
+  // Format time in MM:SS
+  function formatTime(timeInSeconds) {
+    const minutes = Math.floor(timeInSeconds / 60);
+    const seconds = Math.floor(timeInSeconds % 60);
+    return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+  }
 </script>
