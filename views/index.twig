@@ -168,7 +168,7 @@
             if (window.getComputedStyle(spotifyWidgetElement).display == "none") {
               spotifyWidgetElement.style.display = "flex";
             }
-            console.log(Math.round(currentDuration) - Math.round(data.progress_ms));
+            console.log(currentDuration,data.progress_ms,Math.round(currentDuration/1000) - Math.round(data.progress_ms/1000));
             if (data.item.name != musicName || data.item.artists[0].name != artistName || Math.abs(Math.round(currentDuration) - Math.round(data.progress_ms)) > 3000) {
               console.log("update");
               musicName = data.item.name;
