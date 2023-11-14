@@ -168,8 +168,8 @@
             if (window.getComputedStyle(spotifyWidgetElement).display == "none") {
               spotifyWidgetElement.style.display = "flex";
             }
-            console.log(currentDuration - data.progress_ms);
-            if (data.item.name != musicName || data.item.artists[0].name != artistName || Math.abs(currentDuration - data.progress_ms) > 3000) {
+            console.log(Math.round(currentDuration) - math.round(progress_ms));
+            if (data.item.name != musicName || data.item.artists[0].name != artistName || Math.abs(Math.round(currentDuration) - math.round(progress_ms)) > 3000) {
               console.log("update");
               musicName = data.item.name;
               artistName = data.item.artists[0].name;
@@ -181,7 +181,7 @@
               artistNameElement.textContent = data.item.artists[0].name;
 
             }
-            currentDuration += timeout + 150;
+            currentDuration += timeout;
 
           } else {
             if (window.getComputedStyle(spotifyWidgetElement).display == "flex") {
