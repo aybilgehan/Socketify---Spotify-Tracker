@@ -170,6 +170,7 @@
               spotifyWidgetElement.style.display = "flex";
             }
             if (data.item.name != musicName || data.item.artistName != artistName || Math.abs(currentDuration -  data.progress_ms) > 3000) {
+              console.log(currentDuration -  data.progress_ms, data.progress_ms)
               musicName = data.item.name;
               artistName = data.item.artists[0].name;
               currentDuration = data.progress_ms;
@@ -187,7 +188,6 @@
               spotifyWidgetElement.style.display = "none";
             }
           }
-          console.log(currentDuration / 1000, duration / 1000)
           updateProgressBar(currentDuration / 1000, duration / 1000);
         }
         setTimeout(checkPlayingInterval, timeout);
