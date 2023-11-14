@@ -162,16 +162,14 @@
     spotifyApi.setAccessToken(accessToken);
 
     var checkPlayingInterval = function () {
-
       spotifyApi.getMyCurrentPlayingTrack().then((data) => {
         if (data) {
           if (data.is_playing) {
-            console.log(window.getComputedStyle(spotifyWidgetElement).display)
             if (window.getComputedStyle(spotifyWidgetElement).display == "none") {
               spotifyWidgetElement.style.display = "flex";
             }
+            console.log(currentDuration, data.progress_ms, Math.abs(currentDuration - data.progress_ms));
             if (data.item.name != musicName || data.item.artistName != artistName || Math.abs(currentDuration - data.progress_ms) > 3000) {
-              console.log(currentDuration - data.progress_ms, data.progress_ms)
               musicName = data.item.name;
               artistName = data.item.artists[0].name;
               currentDuration = data.progress_ms;
@@ -189,7 +187,7 @@
               spotifyWidgetElement.style.display = "none";
             }
           }
-          updateProgressBar(currentDuration / 1000, duration / 1000);
+          updateProgressBar(Math.floor(currentDuration / 1000), Math.floor(duration / 1000));
         }
         setTimeout(checkPlayingInterval, timeout);
 
