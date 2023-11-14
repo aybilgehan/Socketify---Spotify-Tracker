@@ -167,7 +167,7 @@
         if (data) {
           if (data.is_playing) {
             console.log(window.getComputedStyle(spotifyWidgetElement).display)
-            if (spotifyWidgetElement.style.display == "none") {
+            if (window.getComputedStyle(spotifyWidgetElement).display == "none") {
               spotifyWidgetElement.style.display = "flex";
             }
             if (data.item.name != musicName || data.item.artistName != artistName || Math.abs(currentDuration - data.progress_ms) > 3000) {
@@ -185,7 +185,7 @@
               currentDuration += timeout;
             }
           } else {
-            if (spotifyWidgetElement.style.display == "flex") {
+            if (window.getComputedStyle(spotifyWidgetElement).display == "flex") {
               spotifyWidgetElement.style.display = "none";
             }
           }
