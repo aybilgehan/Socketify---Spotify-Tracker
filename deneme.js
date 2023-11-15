@@ -14,10 +14,10 @@ const pageRouter = require('./routes/page.router');
 
 console.log("App is running in '" + process.env['NODE_ENV'] + "' mode.")
 if (process.env['NODE_ENV'] == "test") {
-  app.locals.appUrl = "http://localhost";
+  app.locals.appUrl = "http://localhost/a";
 }
 else if (process.env['NODE_ENV'] == "production") {
-  app.locals.appUrl = "http://localhost";
+  app.locals.appUrl = "http://localhost/a";
 }else{
   console.log("anlamadım hocam");
 }

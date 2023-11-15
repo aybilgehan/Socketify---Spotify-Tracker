@@ -6,7 +6,7 @@ const { exit } = require('process');
 
 
 exports.connect = async function () {
-    mongoose.connect(process.env.MONGODB_URL_DENEME, {
+    mongoose.connect(process.env.MONGODB_URL, {
         useNewUrlParser: true,
         useUnifiedTopology: true,
     }).then(() => {

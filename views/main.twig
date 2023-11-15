@@ -125,11 +125,13 @@
 
 
   <script>
+
     const urlDisplay = document.getElementById('url-display');
     const showUrlButton = document.getElementById('show-url-button');
     const copyButton = document.getElementById('copy-button');
     const refreshButton = document.getElementById('refresh-button');
 
+    let appUrl = "{{appUrl}}";
     let originalUrl = "{{trackID}}"; // Backend tarafından alınan URL
     let urlVisible = false;
 
@@ -146,7 +148,7 @@
     });
 
     copyButton.addEventListener('click', function () {
-      navigator.clipboard.writeText(originalUrl).then( () =>
+      navigator.clipboard.writeText(appUrl + "track/" + originalUrl).then( () =>
       {
         alert('URL kopyalandı!');
       }).catch( () =>
@@ -159,7 +161,7 @@
       fetch('/refreshURL') // API yolunu kullanarak yeni URL al
         .then(response => response.json())
         .then(data => {
-          originalUrl = data.trackID;
+          originalUrl = appUrl + "track/" + data.trackID;
           updateUrlVisibility();
           alert('Yeni URL oluşturuldu!')
         })
@@ -168,9 +170,9 @@
 
     function updateUrlVisibility() {
       if (urlVisible) {
-        urlDisplay.value = originalUrl;
+        urlDisplay.value = appUrl + "track/" + originalUrl;
       } else {
-        urlDisplay.value = '*'.repeat(originalUrl.length);
+        urlDisplay.value = '*'.repeat((appUrl+ "track/" + originalUrl).length);
       }
     } 
   </script>

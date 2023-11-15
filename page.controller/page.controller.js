@@ -6,7 +6,6 @@ const SpotifyWebApi = require("../spotifyApi/spotifyHandler.js")
 const { v4: uuidv4 } = require('uuid');
 const webSocket = require("../webSocket/webSocket.js")
 
-const DBHandler = require("../dbHandler/dbHandler.js")
 
 const SPOTIFY_CLIENT_ID = process.env.SPOTIFY_CLIENT_ID;
 const SPOTIFY_CLIENT_SECRET = process.env.SPOTIFY_CLIENT_SECRET;
@@ -32,7 +31,7 @@ exports.postLoginPage = async (req, res, next) => {
             req.session.connected = user.spotify.connected;
             req.session.option = user.settings.option;
             if(user.spotify.connected){
-                req.session.trackID = "https://socketify-7256.onrender.com/track/"+user.trackID;
+                req.session.trackID = user.trackID;
             }
             res.redirect("/")
         }
@@ -197,6 +196,8 @@ exports.postSetOption = async (req, res, next) => {
  */
 exports.getTrackPage = async (req, res, next) => {
     try {
+        const user = await Users.find({ trackID: req.params.trackID });
+        console.log(user)
         await Users.find({ trackID: req.params.trackID }).then((data) => {
             if (data) {
                 res.render("index", {
@@ -221,7 +222,7 @@ exports.refreshURL = async (req, res, next) => {
             user.trackID = newTrackID;
             user.save();
             webSocket.disconnectUserWhenUrlRefreshed(req.session.user);
-            res.json({ trackID: "https://socketify-7256.onrender.com/track/" + newTrackID });
+            res.json({ trackID: newTrackID });
         }else{
             res.send("error")
         }

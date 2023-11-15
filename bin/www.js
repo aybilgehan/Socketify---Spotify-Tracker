@@ -1,4 +1,4 @@
-var app = require("../deneme.js");
+var app = require("../app.js");
 var debug = require('debug')('untitled1:server');
 var http = require('http');
 var webSocket = require('../webSocket/webSocket.js');
