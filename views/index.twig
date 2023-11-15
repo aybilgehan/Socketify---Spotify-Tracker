@@ -134,6 +134,8 @@
   const socket = new io();
   const spotifyApi = new SpotifyWebApi();
 
+  let timeoutID;
+
   // Send the username to the server when the connection is established
   socket.on('connect', () => {
     console.log("connected");
@@ -148,6 +150,7 @@
 
   // Handle disconnection from the server
   socket.on('disconnect', () => {
+    clearTimeout(timeoutID);
     console.log("close");
   });
 
@@ -168,7 +171,6 @@
             if (window.getComputedStyle(spotifyWidgetElement).display == "none") {
               spotifyWidgetElement.style.display = "flex";
             }
-            console.log(currentDuration,data.progress_ms,currentDuration - data.progress_ms);
             if (data.item.name != musicName || data.item.artists[0].name != artistName || Math.abs(currentDuration - data.progress_ms) > 3000) {
               console.log("update");
               musicName = data.item.name;
@@ -190,7 +192,7 @@
           }
           updateProgressBar(currentDuration / 1000, duration / 1000);
         }
-        setTimeout(checkPlayingInterval, timeout- 150);
+        timeoutID = setTimeout(checkPlayingInterval, timeout- 150);
 
       }).catch((err) => {
         console.log(err)

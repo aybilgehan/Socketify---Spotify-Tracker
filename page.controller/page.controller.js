@@ -30,7 +30,7 @@ exports.postLoginPage = async (req, res, next) => {
             req.session.user = user.username;
             req.session.connected = user.spotify.connected;
             req.session.option = user.settings.option;
-            if(user.spotify.connected){
+            if (user.spotify.connected) {
                 req.session.trackID = user.trackID;
             }
             res.redirect("/")
@@ -177,37 +177,13 @@ exports.postSetOption = async (req, res, next) => {
     }
 }
 
-/* exports.getTrackPage = async(req, res, next) => {
-    try {
-        res.status(200).render("index", {
-            username: req.session.user,
-            connected: req.session.connected,
-            option: req.session.option
-        })
-    } catch (error) {
-        console.log(error);
-}}
- */
 
-/* exports.postDenemePage = async (req, res, next) => {
-    deneme.send();
-    res.send("oldu")
-}
- */
 exports.getTrackPage = async (req, res, next) => {
     try {
-        const user = await Users.find({ trackID: req.params.trackID });
-        console.log(user)
-        await Users.find({ trackID: req.params.trackID }).then((data) => {
-            if (data) {
-                res.render("index", {
-                    username: data[0].username
-                })
-            } else {
-                res.send("Yanlış track id")
-            }
-        });
+        let user = await Users.findOne({ trackID: req.params.trackID });
 
+        if (!user) { res.send("Yanlış track id"); return; }
+        res.render("index", { username: user.username })
 
     } catch (err) {
         res.send("Yanlış track id")
@@ -217,16 +193,15 @@ exports.getTrackPage = async (req, res, next) => {
 exports.refreshURL = async (req, res, next) => {
     try {
         let user = await Users.findOne({ username: req.session.user });
-        if (user) {
-            let newTrackID = uuidv4();
-            user.trackID = newTrackID;
-            user.save();
-            webSocket.disconnectUserWhenUrlRefreshed(req.session.user);
-            res.json({ trackID: newTrackID });
-        }else{
-            res.send("error")
-        }
-    }catch(err){
+        if (!user) { res.send("error"); return; }
+
+        let newTrackID = uuidv4();
+        user.trackID = newTrackID;
+        user.save();
+        webSocket.disconnectUserWhenUrlRefreshed(req.session.user);
+        res.json({ trackID: newTrackID });
+        
+    } catch (err) {
         console.log(err);
         res.send("error")
     }
