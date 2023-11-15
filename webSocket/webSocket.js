@@ -8,13 +8,11 @@ const users = {}
 
 exports.connection = async function (socket, username) {
     var userSpotifyApi;
-    if (users.hasOwnProperty(username)) {
-        //socket.emit("duplicate");
-    }else{
-        userSpotifyApi = await spotifyApi.connectSpotify(username);
-        users[username] = {"socket": socket, "spotifyApi": userSpotifyApi};
-        socket.emit("track", userSpotifyApi.getAccessToken());
-    }
+
+    userSpotifyApi = await spotifyApi.connectSpotify(username);
+    users[username] = { "socket": socket, "spotifyApi": userSpotifyApi };
+    socket.emit("track", userSpotifyApi.getAccessToken());
+
 }
 
 exports.refreshToken = async function (socket, username) {
