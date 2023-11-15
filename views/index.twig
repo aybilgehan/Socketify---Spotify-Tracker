@@ -145,16 +145,9 @@
     track(accessToken);
   });
 
-  socket.on('duplicate', () => {
-    document.getElementById('uyari').innerHTML = "Bu spotify hesabı kullanımda. Lütfen başka bir hesap giriniz.";
-    setTimeout(() => {
-      window.location.href = "/";
-    }, 10000)
-  })
 
   // Handle disconnection from the server
   socket.on('disconnect', () => {
-    window.location.href = "/logout";
     console.log("close");
   });
 
