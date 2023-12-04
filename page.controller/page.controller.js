@@ -28,9 +28,6 @@ exports.postLoginPage = async (req, res, next) => {
         } else {
             req.session.user = user.username;
             req.session.connected = user.spotify.connected;
-            if (user.spotify.connected) {
-                req.session.trackID = user.trackID;
-            }
             res.redirect("/")
         }
     } catch (error) {
@@ -51,10 +48,13 @@ exports.getMainPage = async (req, res, next) => {
 }
 
 exports.getDashboardPage = async (req, res, next) => {
+    let user = await Users.findOne({ "username": req.session.user });
+    if (user.spotify.connected) {
+        req.session.trackID = user.trackID;
+    }
     try{
         res.status(200).render("dashboard", {
             connected: req.session.connected,
-            option: req.session.option,
             trackID: req.session.trackID
         })
     }catch(error){
