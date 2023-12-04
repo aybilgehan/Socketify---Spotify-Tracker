@@ -121,41 +121,56 @@
       </div>
       <div class="section-wrapper block content-1170 center-relative">
         <div class="content-wrapper">
-
-          <div class="one_third ">
+          <div class="single">
             <div class="service-holder">
               <p class="service-num">1</p>
               <div class="service-txt">
                 <h4>Spotify</h4>
                 <p>
-                  Register to Spotify Developer via your Spotify account using and create an application <a
-                    href="https://developer.spotify.com/" target="_blank">this link</a>.
+                  -> Register to Spotify Developer via your Spotify account using 
+                  <a href="https://developer.spotify.com/" target="_blank">this link</a>.<br>
+                  -> Click the profile icon on the top right and click Dashboard. Then click the "Create App"
+                  button.<br>
+                  -> Give your app a name and description whatever you want It belongs to you.<br>
+                  -> Website URL must be ' <strong id="app-url"><button title="Copy to clickboard" class="non-styled"
+                      onclick="copy('app-url')">{{appUrl}}</button></strong> ' and Redirect URIs must be '
+                  <strong id="callback-url"><button title="Copy to clickboard" class="non-styled"
+                      onclick="copy('callback-url')">{{appUrl}}callback</button></strong> ' .<br>
+                  -> Select "Web API" and save your app.
                 </p>
                 <br>
               </div>
             </div>
           </div>
 
-          <div class="one_third ">
+          <div class="single ">
             <div class="service-holder">
               <p class="service-num">2</p>
               <div class="service-txt">
                 <h4>Socketify</h4>
                 <p>
-                  Register to Socketify and connect your Spotify application.
+                  -> Your app is ready to use. Again click the profile icon on the top right and click Dashboard.<br>
+                  -> Then click your app. On the top right click '<strong>Setting</strong>'. <br>
+                  -> Copy your '<strong>Client ID</strong>' and '<strong>Client Secret</strong>' and paste them to the form above.<br>
+                  -> Click '<strong>Connect Spotify</strong>' button and you are ready to go!
                 </p>
                 <br>
               </div>
             </div>
           </div>
 
-          <div class="one_third last">
+          <div class="single">
             <div class="service-holder">
               <p class="service-num">3</p>
               <div class="service-txt">
                 <h4>Stream</h4>
                 <p>
-                  Get your unique URL and stream the music you play to your viewers.
+                  -> Your Track URL is ready to use. You can use it on your OBS or Streamlabs OBS.<br>
+                  -> Add a new browser source and paste your URL to the URL section.<br>
+                  -> You can change the size of the browser source to fit your stream.<br>
+                  -> Do not forget to check the '<strong>Refresh browser when scene becomes active</strong>' option.<br>
+                  -> It can be shown empty if you are not playing any song on Spotify.<br>
+                  -> Enjoy! :)
                 </p>
                 <br>
               </div>
@@ -166,128 +181,60 @@
       </div>
     </div>
 
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="footer-content center-relative">
+        <div class="footer-logo">
+          <img src="images/socketify-favicon-white.svg" alt="Socketify" />
+        </div>
+        <div class="footer-logo-divider"></div>
+        <div class="footer-mail">
+          <a href="mailto:help@socketify.com">help@socketify.com</a>
+        </div>
+        <div class="footer-social-divider"></div>
+        <div class="social-holder">
+          <a href="#">
+            <span class="fa fa-twitter"></span>
+          </a>
+          <a href="#">
+            <span class="fa fa-facebook"></span>
+          </a>
+          <a href="#">
+            <span class="fa fa-behance"></span>
+          </a>
+          <a href="#">
+            <span class="fa fa-dribbble"></span>
+          </a>
+        </div>
 
-    <!-- Contact Section -->
-    <div id="contact" class="section">
-      <div class="page-title-holder">
-        <h3 class="entry-title">
-          CONTACT
-        </h3>
-      </div>
-      <div class="section-wrapper block content-1170 center-relative">
-        <div class="content-wrapper">
-          <div class="one_half ">
-            <p class="title-description-up">CONTACT US</p>
-            <h2 class="entry-title medium-text">
-              Lets start <br>
-              Working
-            </h2>
-            <p>
-              Because they are hard, because that goal will serve to organize and measure the best of our energies and
-              skills, because that challenge is one that we are willing to accept one we are.
-            </p>
-            <br>
-            <div class="social">
-              <a href="#" target="_blank">
-                <span class="fa fa-facebook"></span>
-              </a>
-            </div>
-            <div class="social">
-              <a href="#" target="_blank">
-                <span class="fa fa-twitter"></span>
-              </a>
-            </div>
-            <div class="social">
-              <a href="#" target="_blank">
-                <span class="fa fa-instagram"></span>
-              </a>
-            </div>
-            <div class="social">
-              <a href="#" target="_blank">
-                <span class="fa fa-vimeo"></span>
-              </a>
-            </div>
-            <div class="social">
-              <a href="#" target="_blank">
-                <span class="fa fa-behance"></span>
-              </a>
-            </div>
-          </div>
-
-          <div class="one_half last ">
-            <div class="contact-form">
-              <p>
-                <input id="name" type="text" name="your-name" placeholder="Name">
-              </p>
-              <p>
-                <input id="contact-email" type="email" name="your-email" placeholder="Email">
-              </p>
-              <p>
-                <input id="subject" type="text" name="your-subject" placeholder="Subject">
-              </p>
-              <p>
-                <textarea id="message" name="your-message" placeholder="Message"></textarea>
-              </p>
-              <p class="contact-submit-holder">
-                <input type="submit" value="SEND">
-              </p>
-            </div>
-          </div>
-          <div class="clear"></div>
-
-
+        <div class="copyright-holder">
+          © 2023 Socketify
         </div>
       </div>
+    </footer>
+  </div>
+  <div classs="container p-5">
+    <div class="row no-gutters fixed-bottom">
+      <div class="alert alert-success" id="success-alert">
+        <strong>Success!</strong> URL copied!.
+      </div>
     </div>
   </div>
-
-  <!-- Footer -->
-  <footer class="footer">
-    <div class="footer-content center-relative">
-      <div class="footer-logo">
-        <img src="images/socketify-favicon-white.svg" alt="Socketify" />
-      </div>
-      <div class="footer-logo-divider"></div>
-      <div class="footer-mail">
-        <a href="mailto:help@socketify.com">help@socketify.com</a>
-      </div>
-      <div class="footer-social-divider"></div>
-      <div class="social-holder">
-        <a href="#">
-          <span class="fa fa-twitter"></span>
-        </a>
-        <a href="#">
-          <span class="fa fa-facebook"></span>
-        </a>
-        <a href="#">
-          <span class="fa fa-behance"></span>
-        </a>
-        <a href="#">
-          <span class="fa fa-dribbble"></span>
-        </a>
-      </div>
-
-      <div class="copyright-holder">
-        © 2023 Socketify
-      </div>
-    </div>
-  </footer>
-  </div>
-
-  <!--Load JavaScript-->
-  <script src="js/jquery.js"></script>
-  <script src="js/jquery.sticky.js"></script>
-  <script src="js/tipper.js"></script>
-  <script src="js/jarallax.js"></script>
-  <script src="js/jarallax-element.min.js"></script>
-  <script src='js/imagesloaded.pkgd.js'></script>
-  <script src='js/jquery.fitvids.js'></script>
-  <script src='js/jquery.smartmenus.min.js'></script>
-  <script src='js/isotope.pkgd.js'></script>
-  <script src='js/owl.carousel.min.js'></script>
-  <script src='js/jquery.sticky-kit.min.js'></script>
-  <script src='js/main.js'></script>
 </body>
+
+<!--Load JavaScript-->
+<script src="js/jquery.js"></script>
+<script src="js/jquery.sticky.js"></script>
+<script src="js/tipper.js"></script>
+<script src="js/jarallax.js"></script>
+<script src="js/jarallax-element.min.js"></script>
+<script src='js/imagesloaded.pkgd.js'></script>
+<script src='js/jquery.fitvids.js'></script>
+<script src='js/jquery.smartmenus.min.js'></script>
+<script src='js/isotope.pkgd.js'></script>
+<script src='js/owl.carousel.min.js'></script>
+<script src='js/jquery.sticky-kit.min.js'></script>
+<script src='js/main.js'></script>
 <script>
 
   const urlDisplay = document.getElementById('url-display');
@@ -299,36 +246,58 @@
   let originalUrl = "{{trackID}}"; // Backend tarafından alınan URL
   let urlVisible = false;
 
-  updateUrlVisibility();
 
-  showUrlButton.addEventListener('mousedown', function () {
-    urlVisible = true;
-    updateUrlVisibility();
+  $(document).ready(function () {
+    $("#success-alert").hide();
   });
 
-  showUrlButton.addEventListener('mouseup', function () {
-    urlVisible = false;
-    updateUrlVisibility();
-  });
-
-  copyButton.addEventListener('click', function () {
-    navigator.clipboard.writeText(appUrl + "track/" + originalUrl).then(() => {
-      alert('URL kopyalandı!');
+  function copy(id) {
+    var copyText = document.getElementById(id).innerText;
+    navigator.clipboard.writeText(copyText).then(() => {
+      $("#success-alert").fadeTo(2000, 500).slideUp(500, function () {
+        $("#success-alert").slideUp(500);
+      });
     }).catch(() => {
-      alert('URL kopyalanamadı!');
+      alert('URL can not be copied!');
     });
-  });
+  }
 
-  refreshButton.addEventListener('click', function () {
-    fetch('/refreshURL') // API yolunu kullanarak yeni URL al
-      .then(response => response.json())
-      .then(data => {
-        originalUrl = appUrl + "track/" + data.trackID;
-        updateUrlVisibility();
-        alert('Yeni URL oluşturuldu!')
-      })
-      .catch(error => console.error('Hata:', error));
-  });
+  if (urlDisplay != null) {
+    updateUrlVisibility();
+
+    showUrlButton.addEventListener('mousedown', function () {
+      urlVisible = true;
+      updateUrlVisibility();
+    });
+
+    showUrlButton.addEventListener('mouseup', function () {
+      urlVisible = false;
+      updateUrlVisibility();
+    });
+
+    copyButton.addEventListener('click', function () {
+      navigator.clipboard.writeText(appUrl + "track/" + originalUrl).then(() => {
+        $("#success-alert").fadeTo(2000, 500).slideUp(500, function () {
+          $("#success-alert").slideUp(500);
+        })
+      }).catch(() => {
+        alert('URL kopyalanamadı!');
+      });
+    });
+
+    refreshButton.addEventListener('click', function () {
+      fetch('/refreshURL') // API yolunu kullanarak yeni URL al
+        .then(response => response.json())
+        .then(data => {
+          originalUrl = appUrl + "track/" + data.trackID;
+          updateUrlVisibility();
+          alert('Yeni URL oluşturuldu!')
+        })
+        .catch(error => console.error('Hata:', error));
+    });
+
+  }
+
 
   function updateUrlVisibility() {
     if (urlVisible) {
@@ -336,7 +305,9 @@
     } else {
       urlDisplay.value = '*'.repeat((appUrl + "track/" + originalUrl).length);
     }
-  } 
+  }
+
+
 </script>
 
 </html>
