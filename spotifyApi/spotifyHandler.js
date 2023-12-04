@@ -7,10 +7,24 @@ const SPOTIFY_CLIENT_ID = process.env.SPOTIFY_CLIENT_ID;
 const SPOTIFY_CLIENT_SECRET = process.env.SPOTIFY_CLIENT_SECRET;
 const REDIRECT_URI = process.env.REDIRECT_URI;
 
+const config2 = {
+    environment: 'development',
+    remoteUrl: 'https://api.spotify.com/v1/',
+    spotifyAuthparams: {
+      client_id: SPOTIFY_CLIENT_ID,
+      client_secret: SPOTIFY_CLIENT_SECRET,
+      redirect_uri: `http://localhost:80/callback`,
+      scope:
+        'user-read-private user-top-read user-read-recently-played user-read-currently-playing playlist-modify-public playlist-modify-private playlist-read-collaborative user-read-play-history user-modify-playback-state',
+      show_dialog: false,
+    },
+  };
+
+
 const spotifyApi = new SpotifyWebApi({
     clientId: SPOTIFY_CLIENT_ID,
     clientSecret: SPOTIFY_CLIENT_SECRET,
-    redirectUri: REDIRECT_URI,
+    redirectUri: REDIRECT_URI
 });
 
 var checkPlayingIntervalTimeout;

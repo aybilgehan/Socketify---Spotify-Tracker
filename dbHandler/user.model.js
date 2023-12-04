@@ -20,15 +20,13 @@ const userSchema = new Schema({
     },
 
     trackID: {
-        type: String,
-        unique: true
+        type: String
     },
 
     spotify: {
         email: {
             type: String
         },
-
         accessToken: {
             type: String
         },
@@ -43,10 +41,12 @@ const userSchema = new Schema({
         }
     },
 
-    settings: {
-        option: {
-            type: String,
-            default: "Option 1"
+    spotifyAppCredential: {
+        clientID: {
+            type: String
+        },
+        clientSecret: {
+            type: String
         }
     }
 });

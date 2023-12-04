@@ -23,7 +23,7 @@ console.log("URL is >>> " + app.locals.appUrl);
 
 
 // Middlewares
-app.use(express.static(__dirname + '/'));
+app.use(express.static(__dirname + '/views/'));
 app.use(express.json());
 app.use(express.urlencoded({
     extended: true

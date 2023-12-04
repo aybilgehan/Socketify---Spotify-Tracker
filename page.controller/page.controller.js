@@ -4,11 +4,10 @@ const axios = require('axios');
 require('dotenv').config();
 const SpotifyWebApi = require("../spotifyApi/spotifyHandler.js")
 const { v4: uuidv4 } = require('uuid');
+const dbHandler = require("../dbHandler/dbHandler.js")
 const webSocket = require("../webSocket/webSocket.js")
 
 
-const SPOTIFY_CLIENT_ID = process.env.SPOTIFY_CLIENT_ID;
-const SPOTIFY_CLIENT_SECRET = process.env.SPOTIFY_CLIENT_SECRET;
 const REDIRECT_URI = process.env.REDIRECT_URI;
 
 
@@ -29,7 +28,6 @@ exports.postLoginPage = async (req, res, next) => {
         } else {
             req.session.user = user.username;
             req.session.connected = user.spotify.connected;
-            req.session.option = user.settings.option;
             if (user.spotify.connected) {
                 req.session.trackID = user.trackID;
             }
@@ -43,14 +41,23 @@ exports.postLoginPage = async (req, res, next) => {
 
 exports.getMainPage = async (req, res, next) => {
     try {
-        res.status(200).render("main", {
-            user: req.session.user,
+        res.status(200).render("index", {
+            user: req.session.user
+        })
+    }
+    catch (error) {
+        console.log(error);
+    }
+}
+
+exports.getDashboardPage = async (req, res, next) => {
+    try{
+        res.status(200).render("dashboard", {
             connected: req.session.connected,
             option: req.session.option,
             trackID: req.session.trackID
         })
-    }
-    catch (error) {
+    }catch(error){
         console.log(error);
     }
 }
@@ -63,7 +70,7 @@ exports.postMainPage = async (req, res, next) => {
             return;
         }
         req.session.user = user.email;
-        res.render("index", {
+        res.render("main", {
             user: req.session.user
         });
 
@@ -95,6 +102,7 @@ exports.postRegisterPage = async (req, res, next) => {
             return;
         }
         else {
+            req.body.trackID = uuidv4();
             await Users.create(req.body);
             res.send("<pre>kullanici olusturuldu.</pre> <a href='/'>Anasayfaya git</a>");
         }
@@ -106,17 +114,27 @@ exports.postRegisterPage = async (req, res, next) => {
 exports.getLogoutPage = async (req, res, next) => {
     try {
         req.session = null;
-        res.redirect("/login");
+        res.redirect("/");
     } catch (error) {
         console.log(error);
     }
 };
 
+exports.postSpotifyCredentials = async (req, res, next) => {
+    try {
+        await dbHandler.addUserSpotifyCredentials(req.session.user, req.body.clientID, req.body.clientSecret);
+        next();
+    }catch(err){
+        res.send(err);        
+    }
+}
+
 exports.getAuthPage = async (req, res, next) => {
+    let user = await Users.findOne({ "username": req.session.user });
     const queryParams = querystring.stringify({
         response_type: 'code',
-        client_id: SPOTIFY_CLIENT_ID,
-        scope: 'user-read-private user-read-email user-read-currently-playing', // Adjust scopes as needed
+        client_id: user.spotifyAppCredential.clientID,
+        scope: 'user-read-private user-read-email user-read-currently-playing user-modify-playback-state', // Adjust scopes as needed
         redirect_uri: REDIRECT_URI,
     });
 
@@ -124,6 +142,7 @@ exports.getAuthPage = async (req, res, next) => {
 }
 
 exports.getCallbackPage = async (req, res, next) => {
+    let user = await Users.findOne({ "username": req.session.user });
     const code = req.query.code;
 
     // Exchange the code for an access token
@@ -131,8 +150,8 @@ exports.getCallbackPage = async (req, res, next) => {
         grant_type: 'authorization_code',
         code,
         redirect_uri: REDIRECT_URI,
-        client_id: SPOTIFY_CLIENT_ID,
-        client_secret: SPOTIFY_CLIENT_SECRET,
+        client_id: user.spotifyAppCredential.clientID,
+        client_secret: user.spotifyAppCredential.clientSecret,
     });
 
     try {
@@ -158,32 +177,13 @@ exports.getCallbackPage = async (req, res, next) => {
     }
 }
 
-// Set option
-exports.postSetOption = async (req, res, next) => {
-    console.log(req.body.option, req.session.option)
-    if (req.body.option != req.session.option) {
-        try {
-            await Users.findOneAndUpdate({ "username": req.session.user }, {
-                settings: {
-                    option: req.body.option
-                }
-            })
-            req.session.option = req.body.option;
-        } catch (error) {
-            console.log(error);
-        }
-    } else {
-        res.redirect("/")
-    }
-}
-
 
 exports.getTrackPage = async (req, res, next) => {
     try {
         let user = await Users.findOne({ trackID: req.params.trackID });
 
         if (!user) { res.send("Yanlış track id"); return; }
-        res.render("index", { username: user.username })
+        res.render("track", { username: user.username })
 
     } catch (err) {
         res.send("Yanlış track id")

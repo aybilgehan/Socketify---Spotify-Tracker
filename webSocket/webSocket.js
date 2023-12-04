@@ -11,7 +11,13 @@ exports.connection = async function (socket, username) {
 
     userSpotifyApi = await spotifyApi.connectSpotify(username);
     users[username] = { "socket": socket, "spotifyApi": userSpotifyApi };
-    socket.emit("track", userSpotifyApi.getAccessToken());
+        userSpotifyApi.getMyCurrentPlayingTrack()
+        .then(function(data) {
+        console.log(username + ' Now playing: ' + data.body.item.name);
+        }, function(err) {
+        console.log('Something went wrong!', err);
+        });
+        socket.emit("track", userSpotifyApi.getAccessToken());
 
 }
 
@@ -31,7 +37,6 @@ exports.disconnect = function (socket) {
         console.log("Connection closed")
     }
 }
-
 
 
 exports.disconnectUserWhenUrlRefreshed = function (username) {

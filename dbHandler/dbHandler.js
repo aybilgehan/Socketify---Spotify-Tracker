@@ -17,16 +17,6 @@ exports.connect = async function () {
     });
 } 
 
-// Connect to MongoDB
-/* exports.connect = function () {
-    mongoose.connect(process.env.MONGODB_URL, {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-    }).then(() => {
-        console.log('DB connection is set.')
-    });
-} */
-
 // Create new user
 exports.addUser = function (username, password, email) {
     try {
@@ -51,6 +41,20 @@ exports.checkSpotify = function (userID) {
 // check spotify account is allready connected before
 exports.checkSpotifyAccount = async function (email) {
     return await userModel.findOne({ "spotify.email": email });
+}
+
+exports.addUserSpotifyCredentials = async function (username, clientID, clientSecret) {
+    try {
+        await userModel.findOneAndUpdate({ username: username }, {
+            spotifyAppCredential: {
+                clientID: clientID,
+                clientSecret: clientSecret
+            }
+        })
+        return true;
+    }catch(err){
+        return err;
+    }
 }
 
 // connect spotify
@@ -96,6 +100,7 @@ exports.getTokens = async function (username) {
         try {
             console.log(username)
             userModel.findOne({ username: username }).then((data) => {
+                console.log(data)
                 resolve(data.spotify);
             })
         } catch (err) {
@@ -117,18 +122,6 @@ exports.updateAccessToken = async function (username, accessToken) {
     }
 }
 
-// update settings
-exports.getOption = function (username) {
-    return userModel.findOne({ username: username }).settings.option;
-}
-
-exports.setOption = function (username, option) {
-    userModel.findOneAndUpdate({ username: username }, {
-        settings: {
-            option: option
-        }
-    })
-}
 
 exports.getUserCredentialsForTrack = async function (trackID) {
 

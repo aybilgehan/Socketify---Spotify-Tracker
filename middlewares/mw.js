@@ -2,7 +2,7 @@ exports.checkUserLoggedIn = async(req, res, next) => {
     if (req.session.user) {
         next();
     } else {
-        res.redirect("/login");
+        res.redirect("/");
     }
 }
 
@@ -30,11 +30,4 @@ exports.checkSpotifyNotConnected = async(req, res, next) => {
     }
 }
 
-exports.checkSocketConnected = async(req, res, next) => {
-    // DEĞİŞECEK
-    if (!req.session.socketConnected) {
-        next();
-    } else {
-        res.redirect("/");
-    }
-}
+

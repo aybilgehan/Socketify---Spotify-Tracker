@@ -1,226 +1,269 @@
-<html>
+<!DOCTYPE HTML>
+<html lang="en-US">
+    <head>
+        <title>Socketify</title>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-<head>
-  <title>Socketify</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
-    integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
-  <script src="/socket.io/socket.io.js"></script>
-  <script src="/node_modules/spotify-web-api-js/src/spotify-web-api.js"></script>
-</head>
+        <link rel="shortcut icon" href="images/socketify-favicon-white.svg">    
+        <link href='https://fonts.googleapis.com/css?family=Rubik:400,700,700i' rel='stylesheet' type='text/css'>		
+        <link rel="stylesheet" type="text/css"  href='style.css'>     
+    </head>
 
+    <body class="page-template-onepage">
 
-<style>
-  body {
-    font-family: "Arial", sans-serif;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-    width: 100vw;
-    margin: 0;
-  }
+        <div class="site-wrapper">   
 
-  #spotify-widget {
-    background-color: #121212;
-    border-radius: 10px;
-    overflow: hidden;
-    width: 90vw;
-    display: none;
-    align-items: center;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
-    padding: 1vw;
-  }
+            <div class="doc-loader">
+                <img src="images/preloader.svg" alt="Socketify">
+            </div>       
 
-  .album-cover {
-    width: 20vw;
-    /* Adjusted to viewport width */
-    height: 20vw;
-    /* Adjusted to viewport width */
-    border-radius: 8px;
-  }
+            <header class="header-holder">             
+                <div class="menu-wrapper center-relative relative">             
+                    <div class="header-logo">
+                        <a href="index.html">
+                            <img src="images/logo.svg" alt="Socketify">
+                        </a>               
+                    </div>
 
-  .track-info {
-    display: flex;
-    flex-direction: column;
-    flex-grow: 1;
-    margin: 0 1vw 0 2vw;
-  }
+                    <div class="toggle-holder">
+                        <div id="toggle">
+                            <div class="first-menu-line"></div>
+                            <div class="second-menu-line"></div>
+                            <div class="third-menu-line"></div>
+                        </div>
+                    </div>
 
-  .music-name,
-  .artist-name {
-    margin: 0;
-    font-size: 5vw;
-    /* Adjusted to viewport width */
-    color: #fff;
-  }
-  .artist-name {
-    font-size: 3vw;
-    color: #ccc;
-    margin-bottom: 5vh;
-  }
+                    <div class="menu-holder">
+                        <nav id="header-main-menu">
+                            <ul class="main-menu sm sm-clean">
+                                <li>
+                                    <a href="#home">Home</a>
+                                </li>
+                                <li>
+                                    <a href="#usage">How To Use</a>
+                                </li>
 
-  .time-info {
-    color: #ccc;
-    font-size: 2vw;
-    /* Adjusted to viewport width */
-  }
+                                <li>
+                                    <a href="#contact">Contact</a>
+                                </li>
+                                {%if user%}
+                                <li>
+                                    <a href="/dashboard">Dashboard</a>
+                                </li>
+                                <li>
+                                    <a href="/logout">Logout</a>
+                                </li>
+                                {%else%}
+                                <li>
+                                    <a href="/login">Login</a>
+                                </li>
+                                <li>
+                                    <a href="/register">Register</a>
+                                </li>
+                                {%endif%}
+                            </ul>
+                        </nav>                       
+                    </div>
+                    <div class="clear"></div>   
+                </div>
+            </header>                  
 
-  .progress-container {
-    flex-shrink: 0;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    column-gap: 2vw;
-    /* Adjusted to viewport width */
-  }
+            <div id="content" class="site-content center-relative">        
 
-  .time-bar-background {
-    border-radius: 30px;
-    height: 1vw;
-    /* Adjusted to viewport width */
-    background-color: #333;
-    /* Dark gray */
-    width: 100%;
-    border-radius: 4px;
-  }
+                <!-- Home Section -->
+                <div id="home" class="section no-page-title">                   
+                    <div class="section-wrapper block content-1170 center-relative">                                                
+                        <div class="content-wrapper"> 
+                            {%if user%}}
+                            <h1 class="big-text">
+                                Welcome <br>
+                                {{user}}
+                            </h1>         
+                            {%else%}                 
+                            <h1 class="big-text">
+                                Spotify <br>                               
+                                & Live Track
+                            </h1>
+                            {%endif%}
+                        </div>                        
+                    </div>
+                </div> 
 
-  .time-bar {
-    height: 100%;
-    background-color: #1DB954;
-    /* Green */
-    width: 0%;
-    border-radius: 30px;
-  }
+                <!-- Services Section -->
+                <div id="usage" class="section">                   
+                    <div class="page-title-holder">
+                        <h3 class="entry-title">
+                            How To Use             
+                        </h3>
+                    </div>
+                    <div class="section-wrapper block content-1170 center-relative">                                                       
+                        <div class="content-wrapper">
 
-  #durationInfo {
-    color: #ccc;
-    font-size: 2vw;
-    /* Adjusted to viewport width */
-    text-align: right;
-  }
-</style>
+                            <div class="one_third ">
+                                <div class="service-holder">
+                                    <p class="service-num">1</p>
+                                    <div class="service-txt">
+                                        <h4>Spotify</h4>
+                                        <p>
+                                            Register to Spotify Developer via your Spotify account using <a href="https://developer.spotify.com/" target="_blank">this link</a>.
+                                        </p>
+                                        <br>
+                                    </div>
+                                </div>
+                            </div>
 
-<body>
-  <div id="spotify-widget">
-    <img alt="Album Cover" id="albumCover" class="album-cover">
-    <div class="track-info">
-      <p id="musicName" class="music-name"></p>
-      <p id="artistName" class="artist-name"></p>
-      <div class="progress-container">
-        <div class="time-info" id="currentDurationInfo"></div>
-        <div class="time-bar-background">
-          <div class="time-bar" id="timeBar"></div>
+                            <div class="one_third ">
+                                <div class="service-holder">
+                                    <p class="service-num">2</p>
+                                    <div class="service-txt">
+                                        <h4>Socketify</h4>
+                                        <p>
+                                            Register to Socketify and connect your Spotify account.
+                                        </p>
+                                        <br>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="one_third last">
+                                <div class="service-holder">
+                                    <p class="service-num">3</p>
+                                    <div class="service-txt">
+                                        <h4>Stream</h4>
+                                        <p>
+                                            Get your unique URL and stream the music you play to your viewers.
+                                        </p>
+                                        <br>
+                                    </div>
+                                </div>
+                            </div>    
+                            <div class="clear"></div>
+                        </div>                
+                    </div>
+                </div>
+
+               
+                <!-- Contact Section -->
+                <div id="contact" class="section">                   
+                    <div class="page-title-holder">
+                        <h3 class="entry-title">
+                            CONTACT             
+                        </h3>
+                    </div>
+                    <div class="section-wrapper block content-1170 center-relative">                                                
+                        <div class="content-wrapper">
+                            <div class="one_half ">
+                                <p class="title-description-up">CONTACT US</p>
+                                <h2 class="entry-title medium-text">
+                                    Lets start <br>
+                                    Working
+                                </h2>
+                                <p>
+                                    Because they are hard, because that goal will serve to organize and measure the best of our energies and skills, because that challenge is one that we are willing to accept one we are.
+                                </p>
+                                <br>
+                                <div class="social">
+                                    <a href="#" target="_blank">
+                                        <span class="fa fa-facebook"></span>
+                                    </a>
+                                </div>
+                                <div class="social">
+                                    <a href="#" target="_blank">
+                                        <span class="fa fa-twitter"></span>
+                                    </a>
+                                </div>
+                                <div class="social">
+                                    <a href="#" target="_blank">
+                                        <span class="fa fa-instagram"></span>
+                                    </a>
+                                </div>
+                                <div class="social">
+                                    <a href="#" target="_blank">
+                                        <span class="fa fa-vimeo"></span>
+                                    </a>
+                                </div>
+                                <div class="social">
+                                    <a href="#" target="_blank">
+                                        <span class="fa fa-behance"></span>
+                                    </a>
+                                </div>
+                            </div>
+
+                            <div class="one_half last ">
+                                <div class="contact-form">
+                                    <p>
+                                        <input id="name" type="text" name="your-name" placeholder="Name">
+                                    </p>
+                                    <p>
+                                        <input id="contact-email" type="email" name="your-email" placeholder="Email">
+                                    </p>                                    
+                                    <p>
+                                        <input id="subject" type="text" name="your-subject" placeholder="Subject">
+                                    </p>
+                                    <p>
+                                        <textarea id="message" name="your-message" placeholder="Message"></textarea>
+                                    </p>
+                                    <p class="contact-submit-holder">
+                                        <input type="submit" value="SEND">
+                                    </p>  
+                                </div>
+                            </div>                            
+                            <div class="clear"></div>
+
+                        
+                        </div>                        
+                    </div>
+                </div> 
+            </div>
+
+            <!-- Footer -->
+            <footer class="footer">
+                <div class="footer-content center-relative">
+                    <div class="footer-logo">
+                        <img src="images/socketify-favicon-white.svg" alt="Socketify" />
+                    </div>        
+                    <div class="footer-logo-divider"></div>
+                    <div class="footer-mail">            
+                        <a href="mailto:help@socketify.com">help@socketify.com</a>
+                    </div>
+                    <div class="footer-social-divider"></div>
+                    <div class="social-holder">
+                        <a href="#">
+                            <span class="fa fa-twitter"></span>
+                        </a>
+                        <a href="#">
+                            <span class="fa fa-facebook"></span>
+                        </a>
+                        <a href="#">
+                            <span class="fa fa-behance"></span>
+                        </a>
+                        <a href="#">
+                            <span class="fa fa-dribbble"></span>
+                        </a>
+                    </div>
+
+                    <div class="copyright-holder">
+                        © 2023 Socketify            
+                    </div>
+                </div>
+            </footer>
         </div>
-        <div class="time-info" id="durationInfo"></div>
-      </div>
-    </div>
-  </div>
-</body>
 
-
-<script>
-
-  // Get the elements from the DOM
-  const spotifyWidgetElement = document.getElementById("spotify-widget");
-  const albumCoverElement = document.getElementById("albumCover");
-  const musicNameElement = document.getElementById("musicName");
-  const artistNameElement = document.getElementById("artistName");
-  const timeInfoElement = document.getElementById("currentDurationInfo");
-  const durationInfoElement = document.getElementById("durationInfo");
-  const timeBarElement = document.getElementById("timeBar");
-
-
-  // Establish a connection to the Socket.io server
-  const socket = new io();
-  const spotifyApi = new SpotifyWebApi();
-
-  let timeoutID;
-
-  // Send the username to the server when the connection is established
-  socket.on('connect', () => {
-    console.log("connected");
-    socket.emit('join', "{{username}}");
-  });
-
-  // Handle messages received from the server
-  socket.on('track', (accessToken) => {
-    track(accessToken);
-  });
-
-
-  // Handle disconnection from the server
-  socket.on('disconnect', () => {
-    clearTimeout(timeoutID);
-    console.log("close");
-  });
-
-
-  function track(accessToken) {
-    var musicName = "";
-    var artistName = "";
-    var currentDuration = 0;
-    var duration = 0;
-    let timeout = 1000;
-
-    spotifyApi.setAccessToken(accessToken);
-
-    var checkPlayingInterval = function () {
-      spotifyApi.getMyCurrentPlayingTrack().then((data) => {
-        if (data) {
-          if (data.is_playing) {
-            if (window.getComputedStyle(spotifyWidgetElement).display == "none") {
-              spotifyWidgetElement.style.display = "flex";
-            }
-            if (data.item.name != musicName || data.item.artists[0].name != artistName || Math.abs(currentDuration - data.progress_ms) > 3000) {
-              console.log("update");
-              musicName = data.item.name;
-              artistName = data.item.artists[0].name;
-              currentDuration = data.progress_ms;
-              duration = data.item.duration_ms;
-
-              albumCoverElement.src = data.item.album.images[0].url;
-              musicNameElement.textContent = data.item.name;
-              artistNameElement.textContent = data.item.artists[0].name;
-
-            }
-            currentDuration += timeout;
-
-          } else {
-            if (window.getComputedStyle(spotifyWidgetElement).display == "flex") {
-              spotifyWidgetElement.style.display = "none";
-            }
-          }
-          updateProgressBar(currentDuration / 1000, duration / 1000);
-        }
-        timeoutID = setTimeout(checkPlayingInterval, timeout- 150);
-
-      }).catch((err) => {
-        console.log(err)
-        if (err.status == 401) {
-          socket.emit('refreshToken', "{{username}}");
-        }
-      })
-
-    }
-    checkPlayingInterval();
-  }
-
-  function updateProgressBar(currentDuration, duration) {
-    const progress = (currentDuration / duration) * 100;
-    timeBarElement.style.width = `${progress}%`; // Erase to white
-    timeBarElement.style.backgroundColor = '#fff'; // White
-
-    // Format time info
-    const formattedCurrentTime = formatTime(currentDuration);
-    const formattedDuration = formatTime(duration);
-    timeInfoElement.textContent = formattedCurrentTime;
-    durationInfoElement.textContent = formattedDuration;
-  }
-
-  // Format time in MM:SS
-  function formatTime(timeInSeconds) {
-    const minutes = Math.floor(timeInSeconds / 60);
-    const seconds = Math.floor(timeInSeconds % 60);
-    return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
-  }
-</script>
+        <!--Load JavaScript-->
+        <script src="js/jquery.js"></script>			                                       
+        <script src="js/jquery.sticky.js"></script>			                                       
+        <script src="js/tipper.js"></script>			                                       
+        <script src="js/jarallax.js"></script>			                                       
+        <script src="js/jarallax-element.min.js"></script>			                                       
+        <script src='js/imagesloaded.pkgd.js'></script>                
+        <script src='js/jquery.fitvids.js'></script>                
+        <script src='js/jquery.smartmenus.min.js'></script>                                 
+        <script src='js/isotope.pkgd.js'></script>                                                 
+        <script src='js/owl.carousel.min.js'></script>                          
+        <script src='js/jquery.sticky-kit.min.js'></script>                          
+        <script src='js/main.js'></script>
+    </body>
+</html>
