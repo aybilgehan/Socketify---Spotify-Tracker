@@ -1,145 +1,292 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE HTML>
+<html lang="en-US">
 
 <head>
   <title>Socketify</title>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
-    integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
-    integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
-    crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"
-    integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
-    crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
-    integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
-    crossorigin="anonymous"></script>
-  <link rel="stylesheet" type="text/css" href="/option1.css" />
-  <script src="/option1.js"></script>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      margin: 50px;
-    }
+  integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <link rel="shortcut icon" href="images/socketify-favicon-white.svg">
+  <link href='https://fonts.googleapis.com/css?family=Rubik:400,700,700i' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" type="text/css" href='style.css'>
 
-    #styleDropdown,
-    #bgColorDropdown,
-    #textColorDropdown {
-      margin: 10px;
-    }
-
-    #resultContainer {
-      margin-top: 30px;
-    }
-
-    .button-container {
-      margin-bottom: 20px;
-    }
-  </style>
 </head>
 
-<body>
-  <div class="container">
-    <div>
-      <a href="/logout">
-        <buton class="btn btn-primary">Logout</buton>
-      </a>
-    </div>
-    <div class="button-container">
-      {% if connected %}
-      <div class="container mt-5">
-        <div class="form-group">
-          <label for="url-display">Spotify Track URL</label>
-          <input type="text" class="form-control" id="url-display" readonly>
-          <small class="text-muted"><strong>* URL size özeldir. Başkalarının ele geçirmesi durumunda yeni URL
-              üretebilirsiniz.</strong></small>
+<body class="page-template-onepage">
 
+  <div class="site-wrapper">
+
+    <div class="doc-loader">
+      <img src="images/preloader.svg" alt="Socketify">
+    </div>
+
+    <header class="header-holder">
+      <div class="menu-wrapper center-relative relative">
+        <div class="header-logo">
+          <a href="index.html">
+            <img src="images/logo.svg" alt="Socketify">
+          </a>
         </div>
-        <div class="d-flex justify-content-between">
+
+        <div class="toggle-holder">
+          <div id="toggle">
+            <div class="first-menu-line"></div>
+            <div class="second-menu-line"></div>
+            <div class="third-menu-line"></div>
+          </div>
+        </div>
+
+        <div class="menu-holder">
+          <nav id="header-main-menu">
+            <ul class="main-menu sm sm-clean">
+              <li>
+                <a href="/">Home</a>
+              </li>
+              <li>
+                <a href="#usage">How To Use</a>
+              </li>
+              <li>
+                <a href="/logout">Logout</a>
+              </li>
+            </ul>
+          </nav>
+        </div>
+        <div class="clear"></div>
+      </div>
+    </header>
+
+    <div id="connect" class="section">
+      <div class="page-title-holder">
+        <h3 class="entry-title">
+          {% if connected %}
+          Track URL
+          {% else %}
+          Connect Spotify
+          {% endif %}
+        </h3>
+      </div>
+      <div class="section-wrapper block content-1170 center-relative">
+        <div class="button-container">
+          {% if connected %}
+          <div class="container mt-5">
+            <div class="form-group">
+              <label for="url-display">Spotify Track URL</label>
+              <input type="text" class="form-control" id="url-display" readonly>
+              <small class="text-muted"><strong>* URL size özeldir. Başkalarının ele geçirmesi durumunda yeni URL
+                  üretebilirsiniz.</strong></small>
+
+            </div>
+            <div class="d-flex justify-content-between">
+              <div>
+                <button class="btn btn-primary" id="show-url-button">URL'yi Göster</button>
+                <button class="btn btn-primary" id="copy-button">URL'yi Kopyala</button>
+                <button class="btn btn-success" id="refresh-button">Yeni URL Oluştur</button>
+              </div>
+
+            </div>
+          </div>
+          {% else %}
           <div>
-            <button class="btn btn-primary" id="show-url-button">URL'yi Göster</button>
-            <button class="btn btn-primary" id="copy-button">URL'yi Kopyala</button>
-            <button class="btn btn-success" id="refresh-button">Yeni URL Oluştur</button>
+            <div class="container ">
+              <form action="auth" method="POST">
+                <div class="form-group">
+                  <label for="clientIdInput">Client ID</label>
+                  <input name="clientID" required type="username" class="form-control" id="clientIdInput"
+                    placeholder="Client ID">
+                </div>
+                <div class="form-group">
+                  <label for="clientSecretInput">Client Secret</label>
+                  <input name="clientSecret" required type="username" class="form-control" id="clientSecretInput"
+                    placeholder="Client Secret">
+                </div>
+                <button type="submit" required class="btn btn-primary">Connect Spotify</button>
+              </form>
+            </div>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+      <div class="clear"></div>
+    </div>
+    <!-- Services Section -->
+    <div id="usage" class="section">
+      <div class="page-title-holder">
+        <h3 class="entry-title">
+          How To Connect
+        </h3>
+      </div>
+      <div class="section-wrapper block content-1170 center-relative">
+        <div class="content-wrapper">
+
+          <div class="one_third ">
+            <div class="service-holder">
+              <p class="service-num">1</p>
+              <div class="service-txt">
+                <h4>Spotify</h4>
+                <p>
+                  Register to Spotify Developer via your Spotify account using and create an application <a
+                    href="https://developer.spotify.com/" target="_blank">this link</a>.
+                </p>
+                <br>
+              </div>
+            </div>
           </div>
 
+          <div class="one_third ">
+            <div class="service-holder">
+              <p class="service-num">2</p>
+              <div class="service-txt">
+                <h4>Socketify</h4>
+                <p>
+                  Register to Socketify and connect your Spotify application.
+                </p>
+                <br>
+              </div>
+            </div>
+          </div>
+
+          <div class="one_third last">
+            <div class="service-holder">
+              <p class="service-num">3</p>
+              <div class="service-txt">
+                <h4>Stream</h4>
+                <p>
+                  Get your unique URL and stream the music you play to your viewers.
+                </p>
+                <br>
+              </div>
+            </div>
+          </div>
+          <div class="clear"></div>
         </div>
       </div>
-      {% else %}
-      <div>
-        <div class="container ">
-          <form action="auth" method="POST">
-            <div class="form-group">
-              <label for="clientIdInput">Client ID</label>
-              <input name="clientID" required type="username" class="form-control" id="clientIdInput"
-                placeholder="Client ID">
-            </div>
-            <div class="form-group">
-              <label for="clientSecretInput">Client Secret</label>
-              <input name="clientSecret" required type="username" class="form-control" id="clientSecretInput"
-                placeholder="Client Secret">
-            </div>
-            <button type="submit" required class="btn btn-primary">Connect Spotify</button>
-          </form>
-        </div>
-      </div>
-      {% endif %}
-
-
     </div>
 
-    <script>
 
-      const urlDisplay = document.getElementById('url-display');
-      const showUrlButton = document.getElementById('show-url-button');
-      const copyButton = document.getElementById('copy-button');
-      const refreshButton = document.getElementById('refresh-button');
+    <!-- Contact Section -->
+    <div id="contact" class="section">
+      <div class="page-title-holder">
+        <h3 class="entry-title">
+          CONTACT
+        </h3>
+      </div>
+      <div class="section-wrapper block content-1170 center-relative">
+        <div class="content-wrapper">
+          <div class="one_half ">
+            <p class="title-description-up">CONTACT US</p>
+            <h2 class="entry-title medium-text">
+              Lets start <br>
+              Working
+            </h2>
+            <p>
+              Because they are hard, because that goal will serve to organize and measure the best of our energies and
+              skills, because that challenge is one that we are willing to accept one we are.
+            </p>
+            <br>
+            <div class="social">
+              <a href="#" target="_blank">
+                <span class="fa fa-facebook"></span>
+              </a>
+            </div>
+            <div class="social">
+              <a href="#" target="_blank">
+                <span class="fa fa-twitter"></span>
+              </a>
+            </div>
+            <div class="social">
+              <a href="#" target="_blank">
+                <span class="fa fa-instagram"></span>
+              </a>
+            </div>
+            <div class="social">
+              <a href="#" target="_blank">
+                <span class="fa fa-vimeo"></span>
+              </a>
+            </div>
+            <div class="social">
+              <a href="#" target="_blank">
+                <span class="fa fa-behance"></span>
+              </a>
+            </div>
+          </div>
 
-      let appUrl = "{{appUrl}}";
-      let originalUrl = "{{trackID}}"; // Backend tarafından alınan URL
-      let urlVisible = false;
+          <div class="one_half last ">
+            <div class="contact-form">
+              <p>
+                <input id="name" type="text" name="your-name" placeholder="Name">
+              </p>
+              <p>
+                <input id="contact-email" type="email" name="your-email" placeholder="Email">
+              </p>
+              <p>
+                <input id="subject" type="text" name="your-subject" placeholder="Subject">
+              </p>
+              <p>
+                <textarea id="message" name="your-message" placeholder="Message"></textarea>
+              </p>
+              <p class="contact-submit-holder">
+                <input type="submit" value="SEND">
+              </p>
+            </div>
+          </div>
+          <div class="clear"></div>
 
-      updateUrlVisibility();
 
-      showUrlButton.addEventListener('mousedown', function () {
-        urlVisible = true;
-        updateUrlVisibility();
-      });
+        </div>
+      </div>
+    </div>
+  </div>
 
-      showUrlButton.addEventListener('mouseup', function () {
-        urlVisible = false;
-        updateUrlVisibility();
-      });
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-content center-relative">
+      <div class="footer-logo">
+        <img src="images/socketify-favicon-white.svg" alt="Socketify" />
+      </div>
+      <div class="footer-logo-divider"></div>
+      <div class="footer-mail">
+        <a href="mailto:help@socketify.com">help@socketify.com</a>
+      </div>
+      <div class="footer-social-divider"></div>
+      <div class="social-holder">
+        <a href="#">
+          <span class="fa fa-twitter"></span>
+        </a>
+        <a href="#">
+          <span class="fa fa-facebook"></span>
+        </a>
+        <a href="#">
+          <span class="fa fa-behance"></span>
+        </a>
+        <a href="#">
+          <span class="fa fa-dribbble"></span>
+        </a>
+      </div>
 
-      copyButton.addEventListener('click', function () {
-        navigator.clipboard.writeText(appUrl + "track/" + originalUrl).then(() => {
-          alert('URL kopyalandı!');
-        }).catch(() => {
-          alert('URL kopyalanamadı!');
-        });
-      });
+      <div class="copyright-holder">
+        © 2023 Socketify
+      </div>
+    </div>
+  </footer>
+  </div>
 
-      refreshButton.addEventListener('click', function () {
-        fetch('/refreshURL') // API yolunu kullanarak yeni URL al
-          .then(response => response.json())
-          .then(data => {
-            originalUrl = appUrl + "track/" + data.trackID;
-            updateUrlVisibility();
-            alert('Yeni URL oluşturuldu!')
-          })
-          .catch(error => console.error('Hata:', error));
-      });
-
-      function updateUrlVisibility() {
-        if (urlVisible) {
-          urlDisplay.value = appUrl + "track/" + originalUrl;
-        } else {
-          urlDisplay.value = '*'.repeat((appUrl + "track/" + originalUrl).length);
-        }
-      } 
-    </script>
+  <!--Load JavaScript-->
+  <script src="js/jquery.js"></script>
+  <script src="js/jquery.sticky.js"></script>
+  <script src="js/tipper.js"></script>
+  <script src="js/jarallax.js"></script>
+  <script src="js/jarallax-element.min.js"></script>
+  <script src='js/imagesloaded.pkgd.js'></script>
+  <script src='js/jquery.fitvids.js'></script>
+  <script src='js/jquery.smartmenus.min.js'></script>
+  <script src='js/isotope.pkgd.js'></script>
+  <script src='js/owl.carousel.min.js'></script>
+  <script src='js/jquery.sticky-kit.min.js'></script>
+  <script src='js/main.js'></script>
 </body>
 
 </html>

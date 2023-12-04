@@ -837,6 +837,13 @@ h1.big-text {
     background-size: auto;
 }
 
+#connect {
+    background-image: url(images/on_black_left.png);
+    background-color: #000000;
+    background-position: left bottom;
+    background-repeat: no-repeat;
+    background-size: auto;
+}
 .service-holder {
     margin: 25px 0;
 }
