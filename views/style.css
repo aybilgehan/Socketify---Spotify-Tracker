@@ -147,7 +147,7 @@ body pre {
     width: 100% !important;
     top: 0;
     position: fixed;
-    -webkit-transform: translateZ(0);    
+    transform: translateZ(0);
 }
 
 .sticky-wrapper {
@@ -847,7 +847,7 @@ h1.big-text {
     background-image: url(images/on_black_left.png);
     background-color: #000000;
     background-position: left bottom;
-    background-repeat: no-repeat;
+    background-repeat: no-repeat space;
     background-size: auto;
 }
 
@@ -857,6 +857,8 @@ h1.big-text {
     background-position: left bottom;
     background-repeat: no-repeat;
     background-size: auto;
+    min-height: calc(100vh - 77px);
+    display: flex;
 }
 .service-holder {
     margin: 25px 0;
@@ -887,7 +889,8 @@ h1.big-text {
     height: 165px;
     overflow: hidden;
     margin-bottom: -10px;
-    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+
 }
 
 

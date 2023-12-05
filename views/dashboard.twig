@@ -27,9 +27,7 @@
     <header class="header-holder">
       <div class="menu-wrapper center-relative relative">
         <div class="header-logo">
-          <a href="index.html">
-            <img src="images/logo.svg" alt="Socketify">
-          </a>
+          <a href="/"><img src="images/logo.svg" alt="Socketify"></a>
         </div>
 
         <div class="toggle-holder">
@@ -46,8 +44,17 @@
               <li>
                 <a href="/">Home</a>
               </li>
+              {% if connected %}
               <li>
-                <a href="#usage">How To Use</a>
+                <a href="#connect">Track URL</a>
+              </li>
+              {% else %}
+              <li>
+                <a href="#connect">Connect</a>
+              </li>
+              {% endif %}
+              <li>
+                <a href="#usage">How To Connect</a>
               </li>
               <li>
                 <a href="/logout">Logout</a>
@@ -70,43 +77,46 @@
         </h3>
       </div>
       <div class="section-wrapper block content-1170 center-relative">
-        <div class="button-container content-wrapper">
-          {% if connected %}
-          <div class="container mt-5">
-            <div class="form-group">
-              <label for="url-display">Spotify Track URL</label>
-              <input type="text" class="form-control" id="url-display" readonly>
-              <small class="text-muted"><strong>* Your URL is private. In the event of unauthorized access, you can generate a new URL.</strong></small>
+        <div class="content-wrapper">
+          <div class="button-container">
+            {% if connected %}
+            <div class="container mt-5">
+              <div class="form-group">
+                <label for="url-display">Spotify Track URL</label>
+                <input type="text" class="form-control" id="url-display" readonly>
+                <small class="text-muted"><strong>* Your URL is private. In the event of unauthorized access, you can
+                    generate a new URL.</strong></small>
 
-            </div>
-            <div class="d-flex justify-content-between">
-              <div>
-                <button class="btn btn-primary" id="show-url-button">Show URL</button>
-                <button class="btn btn-primary" id="copy-button">Copy URL</button>
-                <button class="btn btn-success" id="refresh-button">Regenerate URL</button>
               </div>
+              <div class="d-flex justify-content-between">
+                <div>
+                  <button class="btn btn-primary" id="show-url-button">Show URL</button>
+                  <button class="btn btn-primary" id="copy-button">Copy URL</button>
+                  <button class="btn btn-success" id="refresh-button">Regenerate URL</button>
+                </div>
 
+              </div>
             </div>
-          </div>
-          {% else %}
-          <div>
-            <div class="container ">
-              <form action="auth" method="POST">
-                <div class="form-group">
-                  <label for="clientIdInput">Client ID</label>
-                  <input name="clientID" required type="username" class="form-control" id="clientIdInput"
-                    placeholder="Client ID">
-                </div>
-                <div class="form-group">
-                  <label for="clientSecretInput">Client Secret</label>
-                  <input name="clientSecret" required type="username" class="form-control" id="clientSecretInput"
-                    placeholder="Client Secret">
-                </div>
-                <button type="submit" required class="btn btn-primary">Connect Spotify</button>
-              </form>
+            {% else %}
+            <div>
+              <div class="container ">
+                <form action="auth" method="POST">
+                  <div class="form-group">
+                    <label for="clientIdInput">Client ID</label>
+                    <input name="clientID" required type="username" class="form-control" id="clientIdInput"
+                      placeholder="Client ID">
+                  </div>
+                  <div class="form-group">
+                    <label for="clientSecretInput">Client Secret</label>
+                    <input name="clientSecret" required type="username" class="form-control" id="clientSecretInput"
+                      placeholder="Client Secret">
+                  </div>
+                  <button type="submit" required class="btn btn-primary">Connect Spotify</button>
+                </form>
+              </div>
             </div>
+            {% endif %}
           </div>
-          {% endif %}
         </div>
       </div>
       <div class="clear"></div>
@@ -215,13 +225,11 @@
   </div>
   <div classs="container p-5">
     <div class="row no-gutters fixed-bottom">
-      <div class="alert alert-danger" id="success-alert">
-        <strong>Success!</strong>
-        <p></p>
+      <div class="alert alert-success" id="success-alert">
+        <strong>Success! </strong><p style="display:inline;"></p>
       </div>
-      <div class="alert alert-success" id="danger-alert">
-        <strong>Error!</strong>
-        <p></p>
+      <div class="alert alert-danger" id="danger-alert">
+        <strong>Error! </strong><p style="display:inline;"></p>
       </div>
     </div>
   </div>
