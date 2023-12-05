@@ -11,6 +11,7 @@ const webSocket = require("../webSocket/webSocket.js")
 const REDIRECT_URI = process.env.REDIRECT_URI;
 
 
+// Get login page
 exports.getLoginPage = async (req, res, next) => {
     try {
         res.status(200).render("login");
@@ -19,12 +20,15 @@ exports.getLoginPage = async (req, res, next) => {
     }
 };
 
+// Post login page
 exports.postLoginPage = async (req, res, next) => {
     try {
         let user = await Users.findOne({ "username": req.body.username });
         if (!user || user.password != req.body.password) {
-            res.send("köyüne dön");
-            return;
+            res.send("Invalid username or password");
+            setTimeout(() => {
+                res.redirect("/login");
+            }, 2000);
         } else {
             req.session.user = user.username;
             req.session.connected = user.spotify.connected;
@@ -36,6 +40,7 @@ exports.postLoginPage = async (req, res, next) => {
 }
 
 
+// Get main page
 exports.getMainPage = async (req, res, next) => {
     try {
         res.status(200).render("index", {
@@ -47,6 +52,7 @@ exports.getMainPage = async (req, res, next) => {
     }
 }
 
+// Get dashboard page
 exports.getDashboardPage = async (req, res, next) => {
     let user = await Users.findOne({ "username": req.session.user });
     if (user.spotify.connected) {
@@ -61,24 +67,9 @@ exports.getDashboardPage = async (req, res, next) => {
         console.log(error);
     }
 }
-exports.postMainPage = async (req, res, next) => {
-    try {
 
-        let user = await Users.findOne({ "email": req.body.email });
-        if (!user) {
-            res.send("köyüne dön");
-            return;
-        }
-        req.session.user = user.email;
-        res.render("main", {
-            user: req.session.user
-        });
 
-    } catch (error) {
-        console.log(error);
-    }
-};
-
+// Get register page
 exports.getRegisterPage = async (req, res, next) => {
     try {
         res.status(200).render("register");
@@ -87,6 +78,8 @@ exports.getRegisterPage = async (req, res, next) => {
         console.log(error);
     }
 };
+
+// Post register page
 exports.postRegisterPage = async (req, res, next) => {
     console.log(req.body);
     try {
@@ -95,22 +88,27 @@ exports.postRegisterPage = async (req, res, next) => {
         let checkUsername = await Users.findOne({ "username": req.body.username })
 
         if (checkEmail) {
-            res.send("Emaile kayıtlı kullanıcı var");
-            return;
+            res.send("Email has already been registered");
+            setTimeout(() => {
+                res.redirect("/register");
+            }, 2000);
         } else if (checkUsername) {
-            res.send("Username kayıtlı kullanıcı var");
-            return;
+            res.send("Username has already been registered");
+            setTimeout(() => {
+                res.redirect("/register");
+            }, 2000);
         }
         else {
             req.body.trackID = uuidv4();
             await Users.create(req.body);
-            res.send("<pre>kullanici olusturuldu.</pre> <a href='/'>Anasayfaya git</a>");
+            res.send("<pre>User is created.</pre> <a href='/'>Homepage</a>");
         }
     } catch (error) {
         console.log(error);
     }
 };
 
+// Get logout page
 exports.getLogoutPage = async (req, res, next) => {
     try {
         req.session = null;
@@ -120,6 +118,7 @@ exports.getLogoutPage = async (req, res, next) => {
     }
 };
 
+// Post spotify credentials
 exports.postSpotifyCredentials = async (req, res, next) => {
     try {
         await dbHandler.addUserSpotifyCredentials(req.session.user, req.body.clientID, req.body.clientSecret);
@@ -129,6 +128,7 @@ exports.postSpotifyCredentials = async (req, res, next) => {
     }
 }
 
+// Get auth page
 exports.getAuthPage = async (req, res, next) => {
     let user = await Users.findOne({ "username": req.session.user });
     const queryParams = querystring.stringify({
@@ -141,6 +141,7 @@ exports.getAuthPage = async (req, res, next) => {
     res.redirect(`https://accounts.spotify.com/authorize?${queryParams}`);
 }
 
+// Get callback page
 exports.getCallbackPage = async (req, res, next) => {
     let user = await Users.findOne({ "username": req.session.user });
     const code = req.query.code;
@@ -167,7 +168,7 @@ exports.getCallbackPage = async (req, res, next) => {
                     req.session.connected = true;
                     res.redirect("/")
                 } else {
-                    res.send("Bu hesap zaten başka bir kullanıcıya bağlı")
+                    res.send("The account is already connected")
                 }
             }
         )
@@ -178,18 +179,20 @@ exports.getCallbackPage = async (req, res, next) => {
 }
 
 
+// Get track page
 exports.getTrackPage = async (req, res, next) => {
     try {
         let user = await Users.findOne({ trackID: req.params.trackID });
 
-        if (!user) { res.send("Yanlış track id"); return; }
+        if (!user.spotify.connected) { res.send("Spotify has not connected"); return; }
         res.render("track", { username: user.username })
 
     } catch (err) {
-        res.send("Yanlış track id")
+        res.send("Invalid track id")
     }
 }
 
+// Refresh track url
 exports.refreshURL = async (req, res, next) => {
     try {
         let user = await Users.findOne({ username: req.session.user });

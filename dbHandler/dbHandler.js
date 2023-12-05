@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 const userModel = require('./user.model');
 require('dotenv').config();
-const { v4: uuidv4 } = require('uuid');
 const { exit } = require('process');
 
 
@@ -17,26 +16,6 @@ exports.connect = async function () {
     });
 } 
 
-// Create new user
-exports.addUser = function (username, password, email) {
-    try {
-        const user = new userModel({
-            username: username,
-            password: password,
-            email: email
-        });
-        user.save();
-        return true;
-    } catch (err) {
-        console.log(err);
-    }
-
-}
-
-// check spotify is connected   
-exports.checkSpotify = function (userID) {
-    return userModel.findById(userID).spotify.connected;
-}
 
 // check spotify account is allready connected before
 exports.checkSpotifyAccount = async function (email) {
@@ -61,7 +40,6 @@ exports.addUserSpotifyCredentials = async function (username, clientID, clientSe
 exports.addSpotifyAccount = async function (username, email, accessToken, refreshToken) {
     try {
         await userModel.findOneAndUpdate({ username: username }, {
-            trackID: uuidv4(),
             spotify: {
                 email: email,
                 accessToken: accessToken,
@@ -94,21 +72,6 @@ exports.deleteSpotifyAccount = function (userID) {
     }
 }
 
-// get access token
-exports.getTokens = async function (username) {
-    return new Promise((resolve) => {
-        try {
-            console.log(username)
-            userModel.findOne({ username: username }).then((data) => {
-                console.log(data)
-                resolve(data.spotify);
-            })
-        } catch (err) {
-            console.log(err);
-            resolve(false);
-        }
-    })
-}
 
 // update access token
 exports.updateAccessToken = async function (username, accessToken) {
@@ -122,18 +85,6 @@ exports.updateAccessToken = async function (username, accessToken) {
     }
 }
 
-
-exports.getUserCredentialsForTrack = async function (trackID) {
-
-    try {
-        let user = await userModel.findOne({ trackID: trackID });
-        return user.username;
-
-    } catch (err) {
-        console.log("girdi")
-        console.log(err);
-    }
-}
 
 
 

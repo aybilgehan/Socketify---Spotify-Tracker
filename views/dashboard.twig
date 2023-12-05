@@ -127,7 +127,7 @@
               <div class="service-txt">
                 <h4>Spotify</h4>
                 <p>
-                  -> Register to Spotify Developer via your Spotify account using 
+                  -> Register to Spotify Developer via your Spotify account using
                   <a href="https://developer.spotify.com/" target="_blank">this link</a>.<br>
                   -> Click the profile icon on the top right and click Dashboard. Then click the "Create App"
                   button.<br>
@@ -151,7 +151,8 @@
                 <p>
                   -> Your app is ready to use. Again click the profile icon on the top right and click Dashboard.<br>
                   -> Then click your app. On the top right click '<strong>Setting</strong>'. <br>
-                  -> Copy your '<strong>Client ID</strong>' and '<strong>Client Secret</strong>' and paste them to the form above.<br>
+                  -> Copy your '<strong>Client ID</strong>' and '<strong>Client Secret</strong>' and paste them to the
+                  form above.<br>
                   -> Click '<strong>Connect Spotify</strong>' button and you are ready to go!
                 </p>
                 <br>
@@ -216,7 +217,8 @@
   <div classs="container p-5">
     <div class="row no-gutters fixed-bottom">
       <div class="alert alert-success" id="success-alert">
-        <strong>Success!</strong> URL copied!.
+        <strong>Success!</strong>
+        <p></p>
       </div>
     </div>
   </div>
@@ -254,6 +256,7 @@
   function copy(id) {
     var copyText = document.getElementById(id).innerText;
     navigator.clipboard.writeText(copyText).then(() => {
+      $("#success-alert").$("p").text("URL copied!");
       $("#success-alert").fadeTo(2000, 500).slideUp(500, function () {
         $("#success-alert").slideUp(500);
       });
@@ -277,6 +280,7 @@
 
     copyButton.addEventListener('click', function () {
       navigator.clipboard.writeText(appUrl + "track/" + originalUrl).then(() => {
+        $("#success-alert").$("p").text("URL copied!");
         $("#success-alert").fadeTo(2000, 500).slideUp(500, function () {
           $("#success-alert").slideUp(500);
         })
@@ -289,9 +293,12 @@
       fetch('/refreshURL') // API yolunu kullanarak yeni URL al
         .then(response => response.json())
         .then(data => {
-          originalUrl = appUrl + "track/" + data.trackID;
+          originalUrl = data.trackID;
           updateUrlVisibility();
-          alert('Yeni URL oluşturuldu!')
+          $("#success-alert").$("p").text("URL refreshed!");
+          $("#success-alert").fadeTo(2000, 500).slideUp(500, function () {
+            $("#success-alert").slideUp(500);
+          })
         })
         .catch(error => console.error('Hata:', error));
     });
