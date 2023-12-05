@@ -256,7 +256,7 @@
   function copy(id) {
     var copyText = document.getElementById(id).innerText;
     navigator.clipboard.writeText(copyText).then(() => {
-      $("#success-alert").$("p").text("URL copied!");
+      $("#success-alert p").text("URL copied!");
       $("#success-alert").fadeTo(2000, 500).slideUp(500, function () {
         $("#success-alert").slideUp(500);
       });
@@ -280,7 +280,7 @@
 
     copyButton.addEventListener('click', function () {
       navigator.clipboard.writeText(appUrl + "track/" + originalUrl).then(() => {
-        $("#success-alert").$("p").text("URL copied!");
+        $("#success-alert p").text("URL copied!");
         $("#success-alert").fadeTo(2000, 500).slideUp(500, function () {
           $("#success-alert").slideUp(500);
         })
@@ -295,7 +295,7 @@
         .then(data => {
           originalUrl = data.trackID;
           updateUrlVisibility();
-          $("#success-alert").$("p").text("URL refreshed!");
+          $("#success-alert p").text("URL refreshed!");
           $("#success-alert").fadeTo(2000, 500).slideUp(500, function () {
             $("#success-alert").slideUp(500);
           })
