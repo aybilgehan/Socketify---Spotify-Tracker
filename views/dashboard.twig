@@ -258,20 +258,26 @@
     $("#danger-alert").hide();
   });
 
-  function copy(id) {
-    var copyText = document.getElementById(id).innerText;
-    navigator.clipboard.writeText(copyText).then(() => {
-      $("#success-alert p").text("URL copied!");
+  function alert(type, message) {
+    if (type == "success") {
+      $("#success-alert p").text(message);
       $("#success-alert").fadeTo(2000, 500).slideUp(500, function () {
         $("#success-alert").slideUp(500);
       });
-    }).catch(() => {
-      $("#danger-alert p").text("URL could not copied!");
+    } else if (type == "danger") {
+      $("#danger-alert p").text(message);
       $("#danger-alert").fadeTo(2000, 500).slideUp(500, function () {
         $("#danger-alert").slideUp(500);
-      }); s
-    });
+      });
+    }
   }
+
+  function copy(id) {
+    var copyText = document.getElementById(id).innerText;
+    navigator.clipboard.writeText(copyText).then(() => {
+      alert("success", "URL copied!");
+    }).catch(() => { alert("danger", "URL could not copied!"); });
+  };
 
   if (urlDisplay != null) {
     updateUrlVisibility();
@@ -288,16 +294,8 @@
 
     copyButton.addEventListener('click', function () {
       navigator.clipboard.writeText(appUrl + "track/" + originalUrl).then(() => {
-        $("#success-alert p").text("URL copied!");
-        $("#success-alert").fadeTo(2000, 500).slideUp(500, function () {
-          $("#success-alert").slideUp(500);
-        })
-      }).catch(() => {
-        $("#danger-alert p").text("URL could not copied!");
-        $("#danger-alert").fadeTo(2000, 500).slideUp(500, function () {
-          $("#danger-alert").slideUp(500);
-        });
-      });
+        alert("success", "URL copied!");
+      }).catch(() => { alert("danger", "URL could not copied!"); });
     });
 
     refreshButton.addEventListener('click', function () {
@@ -306,17 +304,8 @@
         .then(data => {
           originalUrl = data.trackID;
           updateUrlVisibility();
-          $("#success-alert p").text("URL refreshed!");
-          $("#success-alert").fadeTo(2000, 500).slideUp(500, function () {
-            $("#success-alert").slideUp(500);
-          })
-        })
-        .catch(() => {
-          $("#danger-alert p").text("URL could not refreshed!");
-          $("#danger-alert").fadeTo(2000, 500).slideUp(500, function () {
-            $("#danger-alert").slideUp(500);
-          });
-        });
+          alert("success", "URL refreshed!");
+        }).catch(() => { alert("danger", "URL could not refreshed!"); });
     });
 
   }
