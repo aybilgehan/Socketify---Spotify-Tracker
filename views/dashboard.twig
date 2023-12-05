@@ -216,8 +216,13 @@
   </div>
   <div classs="container p-5">
     <div class="row no-gutters fixed-bottom">
-      <div class="alert alert-success" id="success-alert">
-        <strong>Success!</strong><p></p>
+      <div class="alert alert-danger" id="success-alert">
+        <strong>Success!</strong>
+        <p></p>
+      </div>
+      <div class="alert alert-success" id="danger-alert">
+        <strong>Error!</strong>
+        <p></p>
       </div>
     </div>
   </div>
@@ -250,6 +255,7 @@
 
   $(document).ready(function () {
     $("#success-alert").hide();
+    $("#danger-alert").hide();
   });
 
   function copy(id) {
@@ -260,7 +266,10 @@
         $("#success-alert").slideUp(500);
       });
     }).catch(() => {
-      alert('URL can not be copied!');
+      $("#danger-alert p").text("URL could not copied!");
+      $("#danger-alert").fadeTo(2000, 500).slideUp(500, function () {
+        $("#danger-alert").slideUp(500);
+      }); s
     });
   }
 
@@ -284,7 +293,10 @@
           $("#success-alert").slideUp(500);
         })
       }).catch(() => {
-        alert('URL kopyalanamadı!');
+        $("#danger-alert p").text("URL could not copied!");
+        $("#danger-alert").fadeTo(2000, 500).slideUp(500, function () {
+          $("#danger-alert").slideUp(500);
+        });
       });
     });
 
@@ -299,7 +311,12 @@
             $("#success-alert").slideUp(500);
           })
         })
-        .catch(error => console.error('Hata:', error));
+        .catch(() => {
+          $("#danger-alert p").text("URL could not refreshed!");
+          $("#danger-alert").fadeTo(2000, 500).slideUp(500, function () {
+            $("#danger-alert").slideUp(500);
+          });
+        });
     });
 
   }
